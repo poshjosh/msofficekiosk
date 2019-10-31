@@ -152,7 +152,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>com.looseboxes.mswordbox.Main</mainClass>
+                                    <mainClass>com.looseboxes.msofficekiosk.Main</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

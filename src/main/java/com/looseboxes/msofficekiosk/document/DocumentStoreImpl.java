@@ -83,7 +83,7 @@ public class DocumentStoreImpl implements DocumentStore {
         this.requestClient = Objects.requireNonNull(requestClient);
 //        final Config config = configFactory.getConfig(ConfigService.APP_INTERNAL);
 //        final Map map = new DefaultHeaders(config);
-//        map.put("Accept", MimetypeEnum.application_msword_docx.getValue());
+//        map.put("Accept", MimetypeEnum.application_msofficekiosk_docx.getValue());
 //        requestClient.headers(map);
         this.credentialsSupplier = Objects.requireNonNull(credentialsSupplier);
         this.cache = Objects.requireNonNull(cache);

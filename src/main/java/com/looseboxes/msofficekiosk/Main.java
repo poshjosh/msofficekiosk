@@ -33,7 +33,7 @@ public class Main {
 
     private static final Logger LOG = Logger.getLogger(Main.class.getName());
     
-    public static final Path DIR_HOME = Paths.get(System.getProperty("user.home"), "mswordbox");
+    public static final Path DIR_HOME = Paths.get(System.getProperty("user.home"), "msofficekiosk");
 
     public static void main(String [] args) {
 

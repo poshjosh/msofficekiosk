@@ -45,13 +45,13 @@ public class Main {
        if(true) {
            
            final String userHome = System.getProperty("user.home");
-           final Path appHome = Paths.get(userHome, "mswordbox");
+           final Path appHome = Paths.get(userHome, "msofficekiosk");
            System.out.println("User home: " + userHome + "\nApp home: " + appHome);
            System.out.println("AppHome.relativize(userHome)" + appHome.relativize(Paths.get(userHome)));
            System.out.println("AppHome.resolve('config')" + appHome.resolve("config"));
            System.out.println("AppHome.resolveSibling('config')" + appHome.resolveSibling("config"));
-           System.out.println("AppHome.resolve('mswordbox')" + appHome.resolve("mswordbox"));
-           System.out.println("AppHome.resolveSibling('mswordbox')" + appHome.resolveSibling("mswordbox"));
+           System.out.println("AppHome.resolve('msofficekiosk')" + appHome.resolve("msofficekiosk"));
+           System.out.println("AppHome.resolveSibling('msofficekiosk')" + appHome.resolveSibling("msofficekiosk"));
            
            return;
        }

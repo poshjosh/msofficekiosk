@@ -56,7 +56,7 @@ public class SetAuthLogingConfig implements Runnable, Callable<URL>, Serializabl
     @Override
     public URL call() throws URISyntaxException {
         final String propertyName = "java.security.auth.login.config";
-//-Djava.security.auth.login.config==C:\Users\Josh\Documents\NetBeansProjects\bcjaas\src\main\resources\META-INF\mswordbox_jaas_config.config
+//-Djava.security.auth.login.config==C:\Users\Josh\Documents\NetBeansProjects\bcjaas\src\main\resources\META-INF\msofficekiosk_jaas_config.config
         final URL url = Thread.currentThread().getContextClassLoader()
                 .getResource(FileNames.RESOURCE_JAAS_CONFIG);
 //        final String path = Paths.get(url.toURI()).toString();
@@ -68,7 +68,7 @@ public class SetAuthLogingConfig implements Runnable, Callable<URL>, Serializabl
             
         }catch(Exception e) {
             LOG.log(Level.WARNING, "Exception resolving path from resources dir; for property: " + propertyName, e);
-            final File file = dir.toPath().resolve("mswordbox_jaas_config.config").toFile();
+            final File file = dir.toPath().resolve("msofficekiosk_jaas_config.config").toFile();
             if(!file.exists()) {
                 try(final InputStream in = url.openStream();
                     final OutputStream out = new FileOutputStream(file, false)) {

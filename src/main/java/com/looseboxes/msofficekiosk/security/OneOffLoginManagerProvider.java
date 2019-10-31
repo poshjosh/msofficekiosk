@@ -22,6 +22,7 @@ import com.bc.diskcache.DiskLruCacheContextImpl;
 import com.bc.diskcache.DiskLruCacheIx;
 import com.bc.elmi.pu.entities.Document;
 import com.bc.elmi.pu.entities.Test;
+import com.bc.elmi.pu.entities.Testsetting;
 import com.looseboxes.msofficekiosk.Cache;
 import com.looseboxes.msofficekiosk.FileNames;
 import com.looseboxes.msofficekiosk.mapper.Mapper;
@@ -53,6 +54,7 @@ import com.looseboxes.msofficekiosk.document.DocumentStoreImpl;
 import com.looseboxes.msofficekiosk.test.Tests;
 import com.looseboxes.msofficekiosk.test.TestsImpl;
 import java.nio.file.Files;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -121,8 +123,12 @@ public final class OneOffLoginManagerProvider {
                 public void run() {
                     final List<Test> tt = tests.get();
                     for(Test t : tt) {
-                        final List<Document> docs = t.getTestsettingList().stream().map((e) -> e.getTestsetting()).collect(Collectors.toList());
-                        documentStore.fetch(docs);
+                        final List<Testsetting> tsl = t.getTestsettingList();
+                        final List<Document> docs = tsl == null || tsl.isEmpty() ? Collections.EMPTY_LIST :
+                                tsl.stream().map((e) -> e.getTestsetting()).collect(Collectors.toList());
+                        if( ! docs.isEmpty()) {
+                            documentStore.fetch(docs);
+                        }
                     }
                 }
             }.start();

@@ -37,7 +37,7 @@ public interface FileNames {
     
     String FILE_KEYVALUE_STORE = "keyvalue.store";
     
-    String FILE_JAAS_CONFIG = "mswordbox_jaas_config.config";
+    String FILE_JAAS_CONFIG = "msofficekiosk_jaas_config.config";
     
-    String RESOURCE_JAAS_CONFIG = "META-INF/mswordbox_jaas_config.config";
+    String RESOURCE_JAAS_CONFIG = "META-INF/msofficekiosk_jaas_config.config";
 }

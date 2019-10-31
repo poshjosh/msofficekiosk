@@ -50,7 +50,7 @@ public class LoginManagerJaas extends LoginManagerImpl implements LoginManager {
     public LoginManagerJaas(Supplier<UI> uiSupplier, Component parent, String title) 
             throws LoginException {
         
-        super("MswordboxJaasConfig", 
+        super("MsofficekioskJaasConfig", 
                 new CallbackHandlerImpl(
                         new DisplayUserPromptMessageHandler(parent), 
                         new CredentialsSupplierJaas(parent, title)
