@@ -17,25 +17,19 @@
 package com.looseboxes.msofficekiosk;
 
 import com.looseboxes.msofficekiosk.functions.LoadExternalJar;
-import com.looseboxes.msofficekiosk.launchers.LauncherFactory;
 import java.nio.file.Path;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * @author Chinomso Bassey Ikwuagwu on Mar 28, 2019 6:18:18 PM
  */
 public class MsKioskSetupProd extends MsKioskSetupImpl{
 
-    public MsKioskSetupProd(Path homeDir) {
-        this(homeDir, new LoadExternalJar());
+    public MsKioskSetupProd(String [] args, Path homeDir) {
+        this(args, homeDir, new LoadExternalJar());
     }
     
-    public MsKioskSetupProd(Path homeDir, Supplier<LauncherFactory.Type> launchTypeSupplier) {
-        super(homeDir, new LoadExternalJar(), "META-INF/properties/logging.properties", launchTypeSupplier);
-    }
-
-    public MsKioskSetupProd(Path homeDir, Consumer<String> addNamedJar) {
-        super(homeDir, addNamedJar, "META-INF/properties/logging.properties");
+    public MsKioskSetupProd(String [] args, Path homeDir, Consumer<String> addNamedJar) {
+        super(args, homeDir, addNamedJar, "META-INF/properties/logging.properties");
     }
 }

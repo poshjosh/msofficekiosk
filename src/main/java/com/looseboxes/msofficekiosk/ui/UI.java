@@ -17,7 +17,6 @@
 package com.looseboxes.msofficekiosk.ui;
 
 import com.looseboxes.msofficekiosk.ui.listeners.LifeCycleListener;
-import org.eclipse.swt.widgets.MenuItem;
 
 /**
  * @author Chinomso Bassey Ikwuagwu on Aug 28, 2018 12:03:09 PM

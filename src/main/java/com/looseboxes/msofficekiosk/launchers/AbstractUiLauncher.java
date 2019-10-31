@@ -16,6 +16,8 @@
 
 package com.looseboxes.msofficekiosk.launchers;
 
+import com.bc.ui.UIContext;
+import com.bc.ui.UIContextImpl;
 import com.looseboxes.msofficekiosk.exceptions.StartupException;
 import com.looseboxes.msofficekiosk.AppContext;
 import com.looseboxes.msofficekiosk.MsKioskSetup;
@@ -42,15 +44,17 @@ public abstract class AbstractUiLauncher<U>
     
     @Autowired private AppContext context;
 
-    @Autowired private MsKioskSetup setup;
-        
     @Autowired private Function<String, Optional<LookAndFeelInfo>> lookAndFeelConfigurer;
 
     private UI ui;
         
     private int exitStatus;
+    
+    private final UIContext uiContext;
         
-    public AbstractUiLauncher() { }
+    public AbstractUiLauncher() { 
+        uiContext = new UIContextImpl();
+    }
 
     @Override
     public AppContext launch(){
@@ -84,7 +88,7 @@ public abstract class AbstractUiLauncher<U>
 
             this.setLookAndFeel();
             
-            this.setup.getStartupUiContext().showProgressBarPercent("..Loading", -1);
+            this.uiContext.showProgressBarPercent("..Loading", -1);
             
             this.initUi(this);
 
@@ -92,7 +96,7 @@ public abstract class AbstractUiLauncher<U>
             
             this.onLaunchFailed(context, e);
             
-            this.setup.getStartupUiContext().showProgressBarPercent(100);
+            this.uiContext.showProgressBarPercent(100);
         }
     }
     
@@ -113,7 +117,7 @@ public abstract class AbstractUiLauncher<U>
     public void onLaunchCompleted(AppContext context, UI ui) { 
         exitStatus = 0;
         LOG.info("Done launching app");
-        this.setup.getStartupUiContext().showProgressBarPercent(100);
+        this.uiContext.showProgressBarPercent(100);
     }
 
     public void onLaunchFailed(Exception e) {
@@ -130,7 +134,7 @@ public abstract class AbstractUiLauncher<U>
     public void onLaunchFailed(AppContext context) {
         try{
             exitStatus = 1;
-            this.setup.getStartupUiContext().showProgressBarPercent(100);
+            this.uiContext.showProgressBarPercent(100);
             this.shutdownAndExit(context);
         }catch(RuntimeException e){
             LOG.log(Level.WARNING, "Exception shutting down and exiting", e);
@@ -181,5 +185,9 @@ public abstract class AbstractUiLauncher<U>
 
     public int getExitStatus() {
         return exitStatus;
+    }
+
+    public UIContext getUiContext() {
+        return uiContext;
     }
 }

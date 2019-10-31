@@ -16,10 +16,13 @@
 
 package com.looseboxes.msofficekiosk;
 
+import com.looseboxes.msofficekiosk.commands.ExitCommand;
+import com.looseboxes.msofficekiosk.functions.ui.DisplayException;
+import com.looseboxes.msofficekiosk.functions.ui.LaunchTypeFromUserSelectionSupplier;
+import com.looseboxes.msofficekiosk.launchers.LauncherFactory;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import java.nio.file.Path;
@@ -39,18 +42,15 @@ public class Main {
 
         try{
             
+            Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandlerImpl());
+            
             LOG.log(Level.INFO, "Command line args: {0}", Arrays.toString(args));
             
             LOG.log(Level.INFO, "Default TimeZone: {0}", TimeZone.getDefault());
             
-            final MsKioskSetup setup = new MsKioskSetupDev(DIR_HOME);
+            final MsKioskSetup setup = new MsKioskSetupDev(args, DIR_HOME);
 
-            final Class<?> [] configClasses = setup.init(args);
-
-            if( ! setup.isSetup()) {
-
-                throw new RuntimeException("You did not enter/select valid details for the app");
-            }    
+            final Class<?> [] configClasses = setup.getConfigClasses();
 
             final ConfigurableApplicationContext ctx = new AnnotationConfigApplicationContext(configClasses);
             
@@ -59,11 +59,21 @@ public class Main {
             LOG.log(Level.INFO, "Spring Context initialized. Active profiles: {0}", 
                     (activeProfiles==null?null:Arrays.toString(activeProfiles)));
 
-            setup.register(ctx);
+            setup.initialize(ctx);
             
-            setup.initLaunchType();
+//            LauncherFactory.Type launchType = new LaunchTypeFromUserDetailsSupplier(Application.workingDir).get();
+//            if(launchType == LauncherFactory.Type.None) {
+//                launchType = new LaunchTypeFromUserSelectionSupplier().get();
+//            }
+            final LauncherFactory.Type launchType = new LaunchTypeFromUserSelectionSupplier().get();
 
-            final AppContext appContext = setup.launchApp();
+            if(launchType == LauncherFactory.Type.None) {
+                new ExitCommand(ctx.getBean(AppContext.class)).call();
+            }
+
+            setup.launchApp(launchType);
+            
+            final AppContext appContext = ctx.getBean(AppContext.class);
             
             appContext.scheduleDataUpdate();
 
@@ -71,19 +81,18 @@ public class Main {
                 appContext.startSocketServerAsync();
             }
         }catch(Throwable e){
-            
-            e.printStackTrace();
-            
-            final String msg = "Encountered an unexpected problem while starting the application";
-            
-            LOG.log(Level.WARNING, msg, e);
-            
-            Object errMsg = e.getLocalizedMessage() == null ? "" : 
-                    e.getLocalizedMessage().length() <= 100 ? e.getLocalizedMessage() :
-                    e.getLocalizedMessage().substring(0, 100) + "...";
-            
-            JOptionPane.showMessageDialog(null, msg + "\n" + errMsg, 
-                    "Startup Error", JOptionPane.WARNING_MESSAGE);
+            try{
+                new DisplayException().accept(e);
+            }finally{
+                System.exit(1);
+            }
         }    
+    }
+
+    private static class UncaughtExceptionHandlerImpl implements Thread.UncaughtExceptionHandler{
+        @Override
+        public void uncaughtException(Thread t, Throwable e) {
+            LOG.log(Level.WARNING, "Uncaught exception by: " + t, e);
+        }
     }
 }

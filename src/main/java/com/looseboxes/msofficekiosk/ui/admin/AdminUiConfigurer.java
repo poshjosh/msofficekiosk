@@ -19,6 +19,7 @@ package com.looseboxes.msofficekiosk.ui.admin;
 import com.bc.config.Config;
 import com.bc.socket.io.messaging.data.Devicedetails;
 import com.looseboxes.msofficekiosk.AppContext;
+import com.looseboxes.msofficekiosk.commands.ExitCommand;
 import com.looseboxes.msofficekiosk.commands.UpdatePropertiesCommand;
 import com.looseboxes.msofficekiosk.config.ConfigFactory;
 import com.looseboxes.msofficekiosk.functions.ui.DisplayAbout;
@@ -37,7 +38,6 @@ import com.looseboxes.msofficekiosk.functions.admin.BuildAdminUiTitle;
 import com.looseboxes.msofficekiosk.ui.AppUiContext;
 import com.looseboxes.msofficekiosk.security.LoginManager;
 import com.looseboxes.msofficekiosk.security.PreconditionLogin;
-import com.looseboxes.msofficekiosk.config.ConfigNamesInternal;
 import com.looseboxes.msofficekiosk.functions.admin.DecryptTestDocNames;
 import com.looseboxes.msofficekiosk.functions.admin.DirsFiles;
 import com.looseboxes.msofficekiosk.functions.admin.GetDevicedetailsList;
@@ -313,30 +313,8 @@ public class AdminUiConfigurer implements UiBeans.UiConfigurer<AdminUi>, Seriali
     
     public Callable getExitCommand(UI ui, Predicate test) {
 
-        final boolean exitSystemOnExit = configFactory.getConfig(ConfigService.APP_INTERNAL)
-                .getBoolean(ConfigNamesInternal.EXIT_SYSTEM_ON_UI_EXIT);
+        final Callable exitCmd = new ExitCommand(test, app, ui);
         
-        LOG.fine(() -> ConfigNamesInternal.EXIT_SYSTEM_ON_UI_EXIT + " = " + exitSystemOnExit);
-
-        final Callable exitCmd = () -> {
-            if(test.test(this)) {
-                try{
-                    if(!app.isShutdown()) {
-                        app.shutdown();
-                    }
-                    if(!ui.isDisposed()) {
-                        ui.dispose();
-                    }
-                }finally{
-                    if(exitSystemOnExit) {
-                        System.exit(0);
-                    }
-                }
-                return Boolean.TRUE;
-            }else{
-                return Boolean.FALSE;
-            }
-        };
         return exitCmd;
     }
 }

@@ -33,6 +33,7 @@ import com.looseboxes.msofficekiosk.launchers.UiLauncher;
 import com.looseboxes.msofficekiosk.security.LoginManager;
 import com.looseboxes.msofficekiosk.document.DocumentStore;
 import com.looseboxes.msofficekiosk.functions.UserProfileMessage;
+import com.looseboxes.msofficekiosk.launchers.PreconditionForAdminUiLaunch;
 import com.looseboxes.msofficekiosk.test.EditCachedTest;
 import com.looseboxes.msofficekiosk.ui.admin.AdminUi;
 import com.looseboxes.msofficekiosk.ui.admin.AdminUiConfigurer;
@@ -85,6 +86,7 @@ public class UiConfiguration implements UiBeans {
     }
 
     @Bean @Scope("prototype") public UiLauncher uiLauncher(ApplicationContext applicationContext) {
+        
         return setup.isAdmin() ? new AdminUiLauncher(applicationContext.getBean(AdminUi.class)) : 
                 new ExamUiLauncher(applicationContext.getBean(ExamUi.class));
     }
@@ -101,7 +103,9 @@ public class UiConfiguration implements UiBeans {
     
     @Bean(PRECONDITION_FOR_UI_LAUNCH) @Scope("prototype") public Precondition preconditionForUiLaunch(
             ApplicationContext applicationContext, AppUiContext uiContext, ConfigFactory configFactory) {
-        return setup.isAdmin() ? (obj) -> true : 
+
+        final Precondition precondition = setup.isAdmin() ? 
+                new PreconditionForAdminUiLaunch() : 
                 new PreconditionForExamUiLaunch(
                         uiContext, 
                         configFactory,
@@ -109,32 +113,15 @@ public class UiConfiguration implements UiBeans {
                         applicationContext.getBean(Tests.class), 
                         applicationContext.getBean(DocumentStore.class), 
                         applicationContext.getBean(EditCachedTest.class));
+
+        LOG.log(Level.FINE, "Precondition for UI launch, type: {0}", precondition.getClass().getName());
+
+        return precondition;
     }
 
-//    @Bean public Display display() {
-//        return Display.getDefault();
-//    }
-    private Display display;
     @Bean public Display display() {
-        final Thread uiThread = new Thread("SWT_UIThread") {
-            @Override
-            public void run() {
-                display = new Display();
-                LOG.info(() -> "T-"+Thread.currentThread().getName() + " Done creating SWT display: " + display);
-            }
-        };
-        uiThread.setDaemon(false);
-        uiThread.start();
-        try{
-            uiThread.join();
-            LOG.info(() -> "T-"+Thread.currentThread().getName() + " Returned from creating SWT display: " + display);
-        }catch(InterruptedException e) {
-            LOG.log(Level.WARNING, "Thread creating SWT Display was interrupted. Thread: " + uiThread.getName(), e);
-            Thread.currentThread().interrupt();
-        }
-        return display;
+        return Display.getDefault();
     }
-    
 
     @Bean @Scope("prototype") public UserProfileMessage userProfileMessage(LoginManager loginManager) {
         return new UserProfileMessage(loginManager);
@@ -174,3 +161,27 @@ public class UiConfiguration implements UiBeans {
 //        }
     }
 }
+/**
+ * 
+    private Display display;
+    @Bean public Display display() {
+        final Thread uiThread = new Thread("SWT_UIThread") {
+            @Override
+            public void run() {
+                display = new Display();
+                LOG.info(() -> "T-"+Thread.currentThread().getName() + " Done creating SWT display: " + display);
+            }
+        };
+        uiThread.setDaemon(false);
+        uiThread.start();
+        try{
+            uiThread.join();
+            LOG.info(() -> "T-"+Thread.currentThread().getName() + " Returned from creating SWT display: " + display);
+        }catch(InterruptedException e) {
+            LOG.log(Level.WARNING, "Thread creating SWT Display was interrupted. Thread: " + uiThread.getName(), e);
+            Thread.currentThread().interrupt();
+        }
+        return display;
+    }
+ * 
+ */

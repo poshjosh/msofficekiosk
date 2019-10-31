@@ -80,11 +80,11 @@ public class AdminUiImpl implements AdminUi{
             LifecycleEventHandler lifecycleEventHandler, 
             MessageDialog messageDialog, String title, 
             String status, UiBeans.UiConfigurer<AdminUi> configurer) {
-        
+
         final boolean shellMayNotBeSubclassed = true;
         
         this.uiContext = Objects.requireNonNull(uiContext);
-        
+    
         shell = new Shell(display);
         
         this.lifecycleEventHandler = Objects.requireNonNull(lifecycleEventHandler);
@@ -135,7 +135,7 @@ public class AdminUiImpl implements AdminUi{
         this.userProfileMenuItem = createCascadeMenuItem(menuBar, status);
 
         this.oleFrame.setFileMenus(new MenuItem[] { fileMenuItem, titleMenuItem , userProfileMenuItem});
-        
+
         configurer.accept(this);
     }
 

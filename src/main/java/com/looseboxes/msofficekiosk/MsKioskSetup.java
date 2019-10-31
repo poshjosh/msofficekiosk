@@ -16,7 +16,6 @@
 
 package com.looseboxes.msofficekiosk;
 
-import com.bc.ui.UIContext;
 import com.looseboxes.msofficekiosk.config.ConfigFactory;
 import com.looseboxes.msofficekiosk.launchers.LauncherFactory;
 import java.nio.file.Path;
@@ -28,13 +27,7 @@ import org.springframework.context.ConfigurableApplicationContext;
  */
 public interface MsKioskSetup extends ApplicationContextInitializer{
     
-    UIContext getStartupUiContext();
-    
-    Class<?>[] init(String [] args);
-    
-    LauncherFactory.Type initLaunchType();
-    
-    AppContext launchApp();
+    void launchApp(LauncherFactory.Type launchType);
 
     Class<?>[] getConfigClasses();
 
@@ -46,18 +39,12 @@ public interface MsKioskSetup extends ApplicationContextInitializer{
 
     String getLoggingConfigFile();
 
-    SpringConfigClassesProvider getSpringConfigClassesProvider();
-
     @Override
     void initialize(ConfigurableApplicationContext applicationContext);
 
     boolean isAdmin();
-
-    boolean isInitialized();
-
-    boolean isSetup();
-
-    void register(ConfigurableApplicationContext applicationContext);
+    
+    boolean isAdmin(LauncherFactory.Type launchType);
 
     //    @Override
     boolean isServer();

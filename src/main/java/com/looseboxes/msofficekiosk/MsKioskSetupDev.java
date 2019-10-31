@@ -17,25 +17,19 @@
 package com.looseboxes.msofficekiosk;
 
 import com.looseboxes.msofficekiosk.functions.LoadInternalJar;
-import com.looseboxes.msofficekiosk.launchers.LauncherFactory;
 import java.nio.file.Path;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * @author Chinomso Bassey Ikwuagwu on Mar 28, 2019 6:13:00 PM
  */
 public class MsKioskSetupDev extends MsKioskSetupImpl {
 
-    public MsKioskSetupDev(Path homeDir) {
-        this(homeDir, new LoadInternalJar());
-    }
-
-    public MsKioskSetupDev(Path homeDir, Supplier<LauncherFactory.Type> launchTypeSupplier) {
-        super(homeDir, new LoadInternalJar(), "META-INF/properties/logging_devmode.properties", launchTypeSupplier);
+    public MsKioskSetupDev(String [] args, Path homeDir) {
+        this(args, homeDir, new LoadInternalJar());
     }
     
-    public MsKioskSetupDev(Path homeDir, Consumer<String> addNamedJar) {
-        super(homeDir, addNamedJar, "META-INF/properties/logging_devmode.properties");
+    public MsKioskSetupDev(String [] args, Path homeDir, Consumer<String> addNamedJar) {
+        super(args, homeDir, addNamedJar, "META-INF/properties/logging_devmode.properties");
     }
 }
