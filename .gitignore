@@ -1,3 +1,11 @@
+dist/
+build/
+target/
+META-INF/
+
+*.properties
+*.sql
+
 # Compiled class file
 *.class
 

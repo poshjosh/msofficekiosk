@@ -1,0 +1,22 @@
+ T E S T S
+-------------------------------------------------------
+Running com.looseboxes.mswordbox.SendMailTest
+execute
+Aug 18, 2018 10:48:44 PM com.bc.mail.config.MailConfigDom getUri
+INFO: Selected mail config file: file:/C:/Users/Josh/Documents/NetBeansProjects/bcmail/target/classes/META-INF/mailserviceconfig.xml
+Aug 18, 2018 10:48:44 PM com.looseboxes.mswordbox.SendMail <init>
+INFO: Connection proprties: Host: europa.ignitionserver.net, protocol: smtps, port: 465
+Properties: {mail.smtp.ssl.enable=true, mail.transport.protocol=smtps, mail.smtp.connectiontimeout=20000, mail.smtp.host=europa.ignitionserver.net, mail.smtp.timeout=60000, mail.debug=false, mail.smtp.starttls.enable=true, mail.smtp.port=465, mail.smtp.auth=true, mail.smtp.quitwait=false}
+Aug 18, 2018 10:48:44 PM com.looseboxes.mswordbox.SendMail execute
+INFO: Sender: amex@looseboxes.com, content type: text/html
+Subject: This is the Subject of the message sent on: 2018-08-18T22:48:41.927+01:00[Africa/Luanda] by: Josh
+Recipients: [posh.bc@gmail.com]
+Attachments: [C:\Users\Josh\.AndroidStudio2.3\system\log\threadDumps-20170927-095656-AI-162.4069837\20170927-104951\threadDump-20170927-104951.txt]
+Aug 18, 2018 10:48:52 PM com.looseboxes.mswordbox.SendMail execute
+INFO: Successfully sent mail message with ID: <1622006612.1.1534628924794@DESKTOP-5MFT0DV>
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 11.292 sec - in com.looseboxes.mswordbox.SendMailTest
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+

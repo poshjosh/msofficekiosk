@@ -1,0 +1,90 @@
+Aug 18, 2018 10:59:31 PM com.bc.mail.config.MailConfigDom getUri
+INFO: Selected mail config file: file:/C:/Users/Josh/Documents/NetBeansProjects/bcmail/target/classes/META-INF/mailserviceconfig.xml
+Aug 18, 2018 10:59:32 PM com.looseboxes.mswordbox.SendMail <init>
+INFO: Connection proprties: Host: europa.ignitionserver.net, protocol: smtps, port: 465
+Properties: {mail.smtp.ssl.enable=true, mail.transport.protocol=smtps, mail.smtp.connectiontimeout=20000, mail.smtp.host=europa.ignitionserver.net, mail.smtp.timeout=60000, mail.debug=false, mail.smtp.starttls.enable=true, mail.smtp.port=465, mail.smtp.auth=true, mail.smtp.quitwait=false}
+Aug 18, 2018 10:59:32 PM com.looseboxes.mswordbox.SendMail execute
+INFO: Sender: amex@looseboxes.com, content type: text/plain
+Subject: AntiMalpracticeApp_Minutes of Meeting_48604ac9b234b446c1a694fe4d6ccfd4
+Recipients: [posh.bc@gmail.com]
+Attachments: [C:\Users\Josh\mswordbox\output\AntiMalpracticeApp_48604ac9b234b446c1a694fe4d6ccfd4_Minutes of Meeting_MAIN_DOCUS_20180818T2258083890100.docx, C:\Users\Josh\mswordbox\output\AntiMalpracticeApp_48604ac9b234b446c1a694fe4d6ccfd4_Minutes of Meeting_Annex A_20180818T2258083890100.docx, C:\Users\Josh\mswordbox\output\AntiMalpracticeApp_48604ac9b234b446c1a694fe4d6ccfd4_Minutes of Meeting_Annex B_20180818T2258083890100.docx]
+Aug 18, 2018 10:59:43 PM com.looseboxes.mswordbox.AntiMalpracticeApp setMessageText
+WARNING: Failed to submit document(s) via email
+javax.mail.MessagingException: Sending the email to the following server failed : europa.ignitionserver.net:465;
+  nested exception is:
+	org.apache.commons.mail.EmailException: Sending the email to the following server failed : europa.ignitionserver.net:465
+	at com.looseboxes.mswordbox.SendMail.execute(SendMail.java:116)
+	at com.looseboxes.mswordbox.AntiMalpracticeApp.submit(AntiMalpracticeApp.java:621)
+	at com.looseboxes.mswordbox.AntiMalpracticeApp.dispose(AntiMalpracticeApp.java:544)
+	at com.looseboxes.mswordbox.commands.DisposeCommand.call(DisposeCommand.java:57)
+	at com.looseboxes.mswordbox.commands.DisposeCommand.call(DisposeCommand.java:29)
+	at com.looseboxes.mswordbox.commands.CommandChain.call(CommandChain.java:47)
+	at com.looseboxes.mswordbox.commands.CommandChain.call(CommandChain.java:27)
+	at com.looseboxes.mswordbox.listeners.SelectionListenerImpl.widgetSelected(SelectionListenerImpl.java:46)
+	at org.eclipse.swt.widgets.TypedListener.handleEvent(Unknown Source)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(Unknown Source)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Unknown Source)
+	at org.eclipse.swt.widgets.Display.runDeferredEvents(Unknown Source)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Unknown Source)
+	at com.looseboxes.mswordbox.AntiMalpracticeApp.show(AntiMalpracticeApp.java:427)
+	at com.looseboxes.mswordbox.AntiMalpracticeApp.show(AntiMalpracticeApp.java:378)
+	at com.looseboxes.mswordbox.AntiMalpracticeApp.openDocument(AntiMalpracticeApp.java:315)
+	at com.looseboxes.mswordbox.commands.OpenDocumentCommand.lambda$call$2(OpenDocumentCommand.java:50)
+	at org.eclipse.swt.widgets.Synchronizer.syncExec(Unknown Source)
+	at org.eclipse.swt.widgets.Display.syncExec(Unknown Source)
+	at com.looseboxes.mswordbox.commands.OpenDocumentCommand.call(OpenDocumentCommand.java:46)
+	at com.looseboxes.mswordbox.commands.OpenDocumentCommand.call(OpenDocumentCommand.java:29)
+	at com.looseboxes.mswordbox.listeners.SelectionListenerImpl.widgetSelected(SelectionListenerImpl.java:46)
+	at org.eclipse.swt.widgets.TypedListener.handleEvent(Unknown Source)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(Unknown Source)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Unknown Source)
+	at org.eclipse.swt.widgets.Display.runDeferredEvents(Unknown Source)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Unknown Source)
+	at com.looseboxes.mswordbox.AntiMalpracticeApp.show(AntiMalpracticeApp.java:427)
+	at com.looseboxes.mswordbox.AntiMalpracticeApp.show(AntiMalpracticeApp.java:378)
+	at com.looseboxes.mswordbox.AntiMalpracticeApp.openDocument(AntiMalpracticeApp.java:315)
+	at com.looseboxes.mswordbox.commands.OpenDocumentCommand.lambda$call$2(OpenDocumentCommand.java:50)
+	at org.eclipse.swt.widgets.Synchronizer.syncExec(Unknown Source)
+	at org.eclipse.swt.widgets.Display.syncExec(Unknown Source)
+	at com.looseboxes.mswordbox.commands.OpenDocumentCommand.call(OpenDocumentCommand.java:46)
+	at com.looseboxes.mswordbox.commands.OpenDocumentCommand.call(OpenDocumentCommand.java:29)
+	at com.looseboxes.mswordbox.AntiMalpracticeApp.lambda$getOpenNewListener$2(AntiMalpracticeApp.java:277)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(Unknown Source)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Unknown Source)
+	at org.eclipse.swt.widgets.Display.runDeferredEvents(Unknown Source)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Unknown Source)
+	at com.looseboxes.mswordbox.AntiMalpracticeApp.show(AntiMalpracticeApp.java:427)
+	at com.looseboxes.mswordbox.AntiMalpracticeApp.show(AntiMalpracticeApp.java:378)
+	at com.looseboxes.mswordbox.AntiMalpracticeApp.openDocument(AntiMalpracticeApp.java:315)
+	at com.looseboxes.mswordbox.commands.OpenDocumentCommand.lambda$call$2(OpenDocumentCommand.java:50)
+	at org.eclipse.swt.widgets.Synchronizer.syncExec(Unknown Source)
+	at org.eclipse.swt.widgets.Display.syncExec(Unknown Source)
+	at com.looseboxes.mswordbox.commands.OpenDocumentCommand.call(OpenDocumentCommand.java:46)
+	at com.looseboxes.mswordbox.commands.OpenDocumentCommand.call(OpenDocumentCommand.java:29)
+	at com.looseboxes.mswordbox.AntiMalpracticeApp.lambda$getOpenNewListener$2(AntiMalpracticeApp.java:277)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(Unknown Source)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Unknown Source)
+	at org.eclipse.swt.widgets.Display.runDeferredEvents(Unknown Source)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Unknown Source)
+	at com.looseboxes.mswordbox.AntiMalpracticeApp.show(AntiMalpracticeApp.java:427)
+	at com.looseboxes.mswordbox.AntiMalpracticeApp.show(AntiMalpracticeApp.java:382)
+	at com.looseboxes.mswordbox.AntiMalpracticeApp.show(AntiMalpracticeApp.java:374)
+	at com.looseboxes.mswordbox.Main.main(Main.java:121)
+Caused by: org.apache.commons.mail.EmailException: Sending the email to the following server failed : europa.ignitionserver.net:465
+	at org.apache.commons.mail.Email.sendMimeMessage(Email.java:1469)
+	at org.apache.commons.mail.Email.send(Email.java:1496)
+	at com.looseboxes.mswordbox.SendMail.execute(SendMail.java:111)
+	... 56 more
+Caused by: javax.mail.AuthenticationFailedException: 535 Incorrect authentication data
+
+	at com.sun.mail.smtp.SMTPTransport$Authenticator.authenticate(SMTPTransport.java:932)
+	at com.sun.mail.smtp.SMTPTransport.authenticate(SMTPTransport.java:843)
+	at com.sun.mail.smtp.SMTPTransport.protocolConnect(SMTPTransport.java:748)
+	at javax.mail.Service.connect(Service.java:388)
+	at javax.mail.Service.connect(Service.java:246)
+	at javax.mail.Service.connect(Service.java:195)
+	at javax.mail.Transport.send0(Transport.java:254)
+	at javax.mail.Transport.send(Transport.java:124)
+	at org.apache.commons.mail.Email.sendMimeMessage(Email.java:1459)
+	... 58 more
+
