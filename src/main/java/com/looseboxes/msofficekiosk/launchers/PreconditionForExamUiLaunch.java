@@ -29,7 +29,6 @@ import com.looseboxes.msofficekiosk.functions.GetTimeDisplay;
 import com.looseboxes.msofficekiosk.functions.admin.OpenFilesNative;
 import com.looseboxes.msofficekiosk.security.LoginManager;
 import com.looseboxes.msofficekiosk.document.DocumentStore;
-import com.looseboxes.msofficekiosk.test.EditCachedTest;
 import com.looseboxes.msofficekiosk.ui.exam.ShowUiTill;
 import com.looseboxes.msofficekiosk.validators.Precondition;
 import java.awt.GridLayout;
@@ -53,6 +52,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import javax.swing.border.EmptyBorder;
 
@@ -73,19 +74,24 @@ public class PreconditionForExamUiLaunch implements Precondition<MsKioskSetup>{
     
     private final DocumentStore documentStore;
     
-    private final EditCachedTest editTest;
+    private final Function<List<Test>, Optional<Test>> promptUserSelectTest;
+    
+    private final UnaryOperator<Test> editTest;
     
     private String error;
     
     public PreconditionForExamUiLaunch(
             UIContext uiContext, ConfigFactory configFactory, 
             LoginManager loginManager,
-            Tests tests, DocumentStore documentStore, EditCachedTest editTest) {
+            Tests tests, DocumentStore documentStore, 
+            Function<List<Test>, Optional<Test>> promptUserSelectTest, 
+            UnaryOperator<Test> editTest) {
         this.uiContext = Objects.requireNonNull(uiContext);
         this.configFactory = Objects.requireNonNull(configFactory);
         this.loginManager = Objects.requireNonNull(loginManager);
         this.tests = Objects.requireNonNull(tests);
         this.documentStore = Objects.requireNonNull(documentStore);
+        this.promptUserSelectTest = Objects.requireNonNull(promptUserSelectTest);
         this.editTest = Objects.requireNonNull(editTest);
     }
 
@@ -161,37 +167,57 @@ public class PreconditionForExamUiLaunch implements Precondition<MsKioskSetup>{
             }
         }else{
 
-            if(true) {
-                error = "Try again later.\n\nNo pending Test within the next " + 
-                        activationLeadTimeMinutes + " " + activationLeadTimeUnit.name().toLowerCase();
-                return false;
-            }
+//            if(true) {
+//                error = "Try again later.\n\nNo pending Test within the next " + 
+//                        activationLeadTimeMinutes + " " + activationLeadTimeUnit.name().toLowerCase();
+//                return false;
+//            }
             
             final ImageIcon icon = uiContext.getImageIconOptional().orElse(null);
             
-            final Object [] arr = {"Edit an exiting Test", "Quit"};
+            final String edit = "Edit an exiting Test";
+            final String create = "Create new Test";
+            final String quit = "Quit";
+            
+            final List<Test> testList = tests.get();
+            
+            final String [] options = ! testList.isEmpty() ? 
+                    new String[]{edit, create, quit} :
+                    new String[]{create, quit};
             
             final String m = "No pending Test within the next " + 
                     activationLeadTimeMinutes + " " + activationLeadTimeUnit.name().toLowerCase() + 
-                    ".\nYou may wish to edit an existing Test to make it due.\n";
+//                    ".\nYou may wish to edit an existing Test to make it due.\n";
+                    ".\nHere are your options.\n";
             
-            final int val = JOptionPane.showOptionDialog(null, m, "No Pending Test", 
-                    JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, icon, arr, arr[0]);
+            final String option = (String)JOptionPane.showInputDialog(null, m, "No Pending Test", 
+                    JOptionPane.PLAIN_MESSAGE, icon, options, options[0]);
             
-            if(val == 0) {
+            LOG.info("Option: " + option);
             
-                final Test test = editTest.call();
-                
-                tests.activateTest(test, loginManager);
-
-                return test(setup);
-                
-            }else{
-            
-                error = "Try again later.\n\nNo pending Test within the next " + 
-                        activationLeadTimeMinutes + " " + activationLeadTimeUnit.name().toLowerCase();
-                
-                return false;
+//            final int index = JOptionPane.showOptionDialog(null, m, "No Pending Test", 
+//                    JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, icon, options, options[0]);
+            switch(option) {
+                case edit: 
+                    final Optional<Test> testOpt = promptUserSelectTest.apply(testList);
+                    if(testOpt.isPresent()) {
+                        final Test test = editTest.apply(testOpt.get());
+                        tests.setUserCreatedTest(test);
+                        tests.activateTest(test, loginManager);
+                        return test(setup);
+                    }else{
+                        error = "You did not select any test!";
+                        return false;
+                    }
+                case quit:
+                    error = "Quitting based on user decision";
+                    return false;
+                case create:
+                default:
+                    final Test test = editTest.apply(new Test());
+                    tests.setUserCreatedTest(test);
+                    tests.activateTest(test, loginManager);
+                    return test(setup);
             }
         }
     }

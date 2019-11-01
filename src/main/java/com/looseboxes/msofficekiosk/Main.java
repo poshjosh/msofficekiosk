@@ -82,6 +82,7 @@ public class Main {
             }
         }catch(Throwable e){
             try{
+                e.printStackTrace();
                 new DisplayException().accept(e);
             }finally{
                 System.exit(1);

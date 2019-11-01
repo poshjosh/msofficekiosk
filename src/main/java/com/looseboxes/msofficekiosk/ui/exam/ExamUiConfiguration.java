@@ -29,9 +29,10 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import com.looseboxes.msofficekiosk.ui.AppUiContext;
 import com.looseboxes.msofficekiosk.security.LoginManager;
-import com.looseboxes.msofficekiosk.test.EditCachedTest;
 import com.looseboxes.msofficekiosk.test.TestDoc;
 import com.looseboxes.msofficekiosk.functions.UserProfileMessage;
+import com.looseboxes.msofficekiosk.test.EditTest;
+import com.looseboxes.msofficekiosk.test.PromptUserSelectTest;
 import com.looseboxes.msofficekiosk.test.TestDocImpl;
 import static com.looseboxes.msofficekiosk.test.Tests.MAIN_DOCUS_DEFAULT_NAME;
 import com.looseboxes.msofficekiosk.ui.MessageDialog;
@@ -67,8 +68,12 @@ public class ExamUiConfiguration {
         return (ExamUiConfigurer)configurer;
     }
 
-    @Bean @Scope("prototype") EditCachedTest editTest(Tests tests, AppUiContext uiContext, 
-            LoginManager loginManager, ConfigFactory configFactory) {
-        return new EditCachedTest(tests, uiContext, loginManager, configFactory);
+    @Bean @Scope("prototype") EditTest editTest(ConfigFactory configFactory) {
+        return new EditTest(configFactory);
+    }
+
+    @Bean @Scope("prototype") PromptUserSelectTest promptUserSelectTest(
+            AppUiContext uiContext, ConfigFactory configFactory) {
+        return new PromptUserSelectTest(uiContext, configFactory);
     }
 }

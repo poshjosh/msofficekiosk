@@ -24,6 +24,7 @@ import com.looseboxes.msofficekiosk.security.LoginManager;
 import com.looseboxes.msofficekiosk.ui.UI;
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -68,22 +69,22 @@ public class LoginManagerJaas extends LoginManagerImpl implements LoginManager {
 
     @Override
     public List<String> getUserRoles() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return Collections.EMPTY_LIST;
     }
 
     @Override
     public boolean isUserInRole(String role) {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        return false;
     }
 
     @Override
     public boolean isUserInAnyRole(String... roles) {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        return false;
     }
 
     @Override
     public Optional<Object> getUserId() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return Optional.empty();
     }
 
     @Override

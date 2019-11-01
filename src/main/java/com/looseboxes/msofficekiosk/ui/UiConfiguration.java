@@ -34,7 +34,8 @@ import com.looseboxes.msofficekiosk.security.LoginManager;
 import com.looseboxes.msofficekiosk.document.DocumentStore;
 import com.looseboxes.msofficekiosk.functions.UserProfileMessage;
 import com.looseboxes.msofficekiosk.launchers.PreconditionForAdminUiLaunch;
-import com.looseboxes.msofficekiosk.test.EditCachedTest;
+import com.looseboxes.msofficekiosk.test.EditTest;
+import com.looseboxes.msofficekiosk.test.PromptUserSelectTest;
 import com.looseboxes.msofficekiosk.ui.admin.AdminUi;
 import com.looseboxes.msofficekiosk.ui.admin.AdminUiConfigurer;
 import com.looseboxes.msofficekiosk.ui.exam.ExamUi;
@@ -112,7 +113,8 @@ public class UiConfiguration implements UiBeans {
                         applicationContext.getBean(LoginManager.class),
                         applicationContext.getBean(Tests.class), 
                         applicationContext.getBean(DocumentStore.class), 
-                        applicationContext.getBean(EditCachedTest.class));
+                        applicationContext.getBean(PromptUserSelectTest.class),
+                        applicationContext.getBean(EditTest.class));
 
         LOG.log(Level.FINE, "Precondition for UI launch, type: {0}", precondition.getClass().getName());
 
