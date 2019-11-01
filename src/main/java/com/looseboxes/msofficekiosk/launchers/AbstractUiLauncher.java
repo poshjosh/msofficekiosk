@@ -20,7 +20,6 @@ import com.bc.ui.UIContext;
 import com.bc.ui.UIContextImpl;
 import com.looseboxes.msofficekiosk.exceptions.StartupException;
 import com.looseboxes.msofficekiosk.AppContext;
-import com.looseboxes.msofficekiosk.MsKioskSetup;
 import com.looseboxes.msofficekiosk.popups.ShowWarningMessage;
 import com.looseboxes.msofficekiosk.ui.UI;
 import java.util.Optional;

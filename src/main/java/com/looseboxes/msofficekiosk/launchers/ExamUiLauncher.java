@@ -46,34 +46,29 @@ public class ExamUiLauncher extends AbstractUiLauncher<ExamUi>{
     @Override
     public void initUi(UiInitializationCallback callback) { 
 
-//        examUi.addLifeCycleListener(new ConfigureUiOnShow(uiConfigurer, display, examUi){
-//            @Override
-//            public void onShown(LifeCycleListener.Event event) {
-//                super.onShown(event);
-//                callback.onUiInitialized(examUi);
-//            }
-//        });
-        examUi.addLifeCycleListener(new LifeCycleAdapter<ExamUi>(){
-            @Override
-            public void onShown(LifeCycleListener.Event<ExamUi> event) {
-                try{
-                    LOG.info("Done displaying UI");
-
-                    callback.onUiInitialized(examUi);
-
-                }catch(RuntimeException e) {
-                    onLaunchFailed(e);
-                }
-            }
-        });
-
         try{
 
-            LOG.info("Displaying UI");
+            examUi.addLifeCycleListener(new LifeCycleAdapter<ExamUi>(){
+                @Override
+                public void onShown(LifeCycleListener.Event<ExamUi> event) {
+                    try{
+                        LOG.info("Done displaying Exam UI");
+
+                        callback.onUiInitialized(examUi);
+
+                    }catch(RuntimeException e) {
+                        onLaunchFailed(e);
+                    }
+                }
+            });
+
+            LOG.info("Displaying Exam UI");
             showUi(examUi);
 
-        }finally{
             shutdownAndExit();
+
+        }catch(RuntimeException e) {
+            this.onLaunchFailed(e);
         }
     }
 }

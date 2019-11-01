@@ -69,37 +69,38 @@ public class EditTest implements UnaryOperator<Test>{
         final Map outputMap = new MultiInputDialog(uiConfig).apply(inputMap, "Enter Test Details");
         
         final Integer testId = (Integer)outputMap.getOrDefault(testIdLabel, null);
-        if(testId != null && !defaultTestId.equals(testId)) {
-            target.setTestid(testId);
-            LOG.log(Level.FINE, "Updated test ID to: {0}", testId);
-        }
+        target.setTestid(Objects.requireNonNull(testId));
+        LOG.log(Level.FINE, "Updated test ID to: {0}", testId);
 
         final String name = (String)outputMap.getOrDefault(TestDocKey.TEST_NAME, null);
-        if(name != null && !name.isEmpty()) {
-            target.setTestname(name);
-            LOG.log(Level.FINE, "Updated name to: {0}", name);
-        }
+        target.setTestname(this.requireNonNullOrEmpty(TestDocKey.TEST_NAME, name));
+        LOG.log(Level.FINE, "Updated test name to: {0}", name);
         
         final String timeStr = (String)outputMap.getOrDefault(startTimeLabel, null);
-        if(timeStr != null && !timeStr.isEmpty()) {
-            final Date time;
-            try{
-                time = new SimpleDateFormat(timeFormat).parse(timeStr);
-                
-                target.setStarttime(time);
-                LOG.log(Level.FINE, "Updated Starttime to: {0}", time);
-                
-            }catch(java.text.ParseException e) {
-                throw new ValidationException("Invalid " + startTimeLabel, e);
-            }
+        requireNonNullOrEmpty(startTimeLabel, timeStr);
+        final Date time;
+        try{
+            time = new SimpleDateFormat(timeFormat).parse(timeStr);
+
+            target.setStarttime(time);
+            LOG.log(Level.FINE, "Updated Starttime to: {0}", time);
+
+        }catch(java.text.ParseException e) {
+            throw new ValidationException("Invalid " + startTimeLabel, e);
         }
         
         final Integer duration = (Integer)outputMap.getOrDefault(durationLabel, null);
-        if(duration != null && !defaultDuration.equals(duration)) {
-            target.setDurationinminutes(duration);
-            LOG.log(Level.FINE, "Updated duration to: {0} minutes", duration);
-        }
+        target.setDurationinminutes(Objects.requireNonNull(duration));
+        LOG.log(Level.FINE, "Updated duration to: {0} minutes", duration);
         
         return target;
+    }
+    
+    private String requireNonNullOrEmpty(String key, String val) {
+        Objects.requireNonNull(val);
+        if(val.isEmpty()) {
+            throw new ValidationException("Empty text is invalid for input: " + key); 
+        }
+        return val;
     }
 }

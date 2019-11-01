@@ -464,8 +464,10 @@ public class ExamUiImpl implements ExamUi {
     
     @Override
     public final long getDisplayDurationMillis() {
-        final Integer durationInMinutes = this.testDoc.getTest().getDurationinminutes();
-//        LOG.finer(() -> "Test: " + testDoc.getTest().getTestname() + ", Duration in minutes: " + durationInMinutes);
+        final Test test = this.testDoc.getTest();
+        LOG.finer(() -> "Test: " + test);
+        final Integer durationInMinutes = test.getDurationinminutes();
+        LOG.finer(() -> "Duration in minutes: " + durationInMinutes);
         final long durationMillis = TimeUnit.MINUTES.toMillis(durationInMinutes);
         return durationMillis;
     }

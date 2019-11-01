@@ -46,34 +46,29 @@ public class AdminUiLauncher extends AbstractUiLauncher<AdminUi> {
      */
     @Override
     public void initUi(UiInitializationCallback callback) { 
-//        adminUI.addLifeCycleListener(new ConfigureUiOnShow(uiConfigurer, display, examUi){
-//            @Override
-//            public void onShown(LifeCycleListener.Event event) {
-//                super.onShown(event);
-//                callback.onUiInitialized(examUi);
-//            }
-//        });
-        adminUI.addLifeCycleListener(new LifeCycleAdapter<ExamUi>(){
-            @Override
-            public void onShown(LifeCycleListener.Event<ExamUi> event) {
-                try{
-                    LOG.info("Done displaying UI");
-
-                    callback.onUiInitialized(adminUI);
-
-                }catch(RuntimeException e) {
-                    onLaunchFailed(e);
-                }
-            }
-        });
 
         try{
+            adminUI.addLifeCycleListener(new LifeCycleAdapter<ExamUi>(){
+                @Override
+                public void onShown(LifeCycleListener.Event<ExamUi> event) {
+                    try{
+                        LOG.info("Done displaying Admin UI");
 
-            LOG.info("Displaying UI");
+                        callback.onUiInitialized(adminUI);
+
+                    }catch(RuntimeException e) {
+                        onLaunchFailed(e);
+                    }
+                }
+            });
+
+            LOG.info("Displaying Admin UI");
             showUi(adminUI);
 
-        }finally{
             shutdownAndExit();
+
+        }catch(RuntimeException e) {
+            this.onLaunchFailed(e);
         }
     }
 }

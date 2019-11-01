@@ -61,14 +61,14 @@ public class TestsImpl implements Tests {
         this.cache = Objects.requireNonNull(cache);
     }
     
-    private List<Test> load() {
-        final List<Test> loaded = load(cache);
+    private List<Test> loadCopy() {
+        final List<Test> loaded = load();
         LOG.log(Level.FINE, "Loaded: {0} Tests", (loaded==null?null:loaded.size()));
         return loaded == null || loaded.isEmpty() ?
                 new ArrayList<>() : new ArrayList<>(loaded);
     }
     
-    private List<Test> load(Cache cache) {
+    private List<Test> load() {
         try{
             return cache.getListFromJson(Rest.RESULTNAME_TESTS, Test.class, Collections.EMPTY_LIST);
         }catch(IOException | ParseException e) {
@@ -77,6 +77,14 @@ public class TestsImpl implements Tests {
         }
     }
     
+    private void save(List<Test> toSave) {
+        try{
+            cache.putAsJson(Rest.RESULTNAME_TESTS, toSave);
+        }catch(IOException e){
+            LOG.log(Level.WARNING, null, e);
+        }
+    }
+
     @Override
     public void delete(Test toDelete) {
         
@@ -90,7 +98,7 @@ public class TestsImpl implements Tests {
             this.activatedTest = null;
         }
         
-        final List<Test> loaded = load();
+        final List<Test> loaded = loadCopy();
         final List<Test> matching = loaded.stream().filter((test) -> toDelete.equals(test)).collect(Collectors.toList());
         LOG.fine(() -> "Found matching tests: " + matching);
 
@@ -103,11 +111,7 @@ public class TestsImpl implements Tests {
             
             if(loaded.removeAll(matching)) {
             
-                try{
-                    cache.putAsJson(Rest.RESULTNAME_TESTS, loaded);
-                }catch(IOException e){
-                    LOG.log(Level.WARNING, null, e);
-                }
+                save(loaded);
             }
         }
     }
@@ -154,30 +158,38 @@ public class TestsImpl implements Tests {
         
         activatedTest = test;
         
+        final List<Test> loaded = loadCopy();
+        if( ! loaded.contains(test)) {
+
+            loaded.add(test);
+
+            this.save(loaded);
+        }
+        
         LOG.log(Level.FINE, "Activated: {0}", test);
     }
 
     @Override
     public List<Test> get(){
-        return Collections.unmodifiableList(load());
+        return Collections.unmodifiableList(loadCopy());
     }
     
     @Override
     public Optional<Test> get(Object id){
-        final List<Test> loaded = load();
+        final List<Test> loaded = loadCopy();
         return loaded.stream().filter((t) -> t.getTestid().toString().equals(id.toString())).findFirst();
     }
 
     @Override
     public Optional<Test> getCurrentOrPendingTest(int period, TimeUnit timeUnit) {
-        final List<Test> loaded = load();
+        final List<Test> loaded = loadCopy();
         final Test output = getCurrentTest(loaded).orElse(getPendingTest(loaded, period, timeUnit).orElse(null));
         return Optional.ofNullable(output);
     }
     
     @Override
     public Optional<Test> getPendingTest(int period, TimeUnit timeUnit) {
-        final List<Test> loaded = load();
+        final List<Test> loaded = loadCopy();
         return getPendingTest(loaded, period, timeUnit);
     }
     
@@ -194,7 +206,7 @@ public class TestsImpl implements Tests {
 
     @Override
     public Optional<Test> getCurrentTest() {
-        final List<Test> loaded = load();
+        final List<Test> loaded = loadCopy();
         return getCurrentTest(loaded);
     }
     
@@ -217,7 +229,7 @@ public class TestsImpl implements Tests {
     }
 
     public List<Test> getFutureTestsBefore(int period, TimeUnit timeUnit) {
-        final List<Test> loaded = load();
+        final List<Test> loaded = loadCopy();
         return getFutureTestsBefore(loaded, period, timeUnit);
     }
 

@@ -77,7 +77,9 @@ public class Main {
                 new ExitCommand(appContext).call();
             }
             
-            if( ! ctx.getBean(LoginManager.class).promptUserLogin(2)) {
+            final boolean loggedIn = ctx.getBean(LoginManager.class).promptUserLogin(2);
+//            LOG.log(Level.FINE, "Logged in: {0}", loggedIn);
+            if( ! loggedIn) {
                 new ExitCommand(appContext).call();
             }
 
