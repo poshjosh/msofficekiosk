@@ -31,7 +31,6 @@ import java.util.logging.Logger;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import java.util.TimeZone;
-import javax.swing.JOptionPane;
 
 /**
  * @author Chinomso Bassey Ikwuagwu on May 3, 2018 12:44:36 PM
@@ -72,28 +71,17 @@ public class Main {
 //            }
             final LauncherFactory.Type launchType = new LaunchTypeFromUserSelectionSupplier().get();
 
+            final AppContext appContext = ctx.getBean(AppContext.class);
+            
             if(launchType == LauncherFactory.Type.None) {
-                new ExitCommand(ctx.getBean(AppContext.class)).call();
+                new ExitCommand(appContext).call();
             }
             
-            System.out.println("0 -----------------------------");
-            while( ! ctx.getBean(LoginManager.class).promptUserLogin(2)) {
-            
-                System.out.println("a -----------------------------");
-                JOptionPane.showMessageDialog(null, "Hello!");
-                System.out.println("b -----------------------------");
-                
-                if(true) {
-                    System.out.println("c -----------------------------");
-                    new ExitCommand(ctx.getBean(AppContext.class)).call();
-                    break;
-                }
+            if( ! ctx.getBean(LoginManager.class).promptUserLogin(2)) {
+                new ExitCommand(appContext).call();
             }
-            System.out.println("1 -----------------------------");
 
             setup.launchApp(launchType);
-            
-            final AppContext appContext = ctx.getBean(AppContext.class);
             
             appContext.scheduleDataUpdate();
 
