@@ -21,14 +21,13 @@ import com.bc.jaas.LoginManagerImpl;
 import com.bc.jaas.callbacks.CallbackHandlerImpl;
 import com.looseboxes.msofficekiosk.security.LoginListener;
 import com.looseboxes.msofficekiosk.security.LoginManager;
-import com.looseboxes.msofficekiosk.ui.UI;
+import com.looseboxes.msofficekiosk.ui.MessageDialog;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 import javax.security.auth.login.LoginException;
 
 /**
@@ -38,17 +37,21 @@ public class LoginManagerJaas extends LoginManagerImpl implements LoginManager {
 
 //    private transient static final Logger LOG = Logger.getLogger(LoginManagerJaas.class.getName());
     
-    private final List<LoginListener> loginListeners;
-    
-    private final Supplier<UI> uiSupplier;
-    
-    public LoginManagerJaas(Supplier<UI> uiSupplier, Component parent) 
-            throws LoginException, SecurityException {
-        
-        this(uiSupplier, parent, "Enter Login Details");
+    static{
+        new SetSystemPropertyAuthLogingConfig().run();
     }
     
-    public LoginManagerJaas(Supplier<UI> uiSupplier, Component parent, String title) 
+    private final List<LoginListener> loginListeners;
+    
+    private final MessageDialog messageHandler;
+    
+    public LoginManagerJaas(MessageDialog messageHandler, Component parent) 
+            throws LoginException {
+        
+        this(messageHandler, parent, "Enter Login Details");
+    }
+    
+    public LoginManagerJaas(MessageDialog messageHandler, Component parent, String title) 
             throws LoginException {
         
         super("MsofficekioskJaasConfig", 
@@ -59,7 +62,7 @@ public class LoginManagerJaas extends LoginManagerImpl implements LoginManager {
                 new DisplayUserPromptMessageHandler(parent));
         
         this.loginListeners = new ArrayList<>();
-        this.uiSupplier = Objects.requireNonNull(uiSupplier);
+        this.messageHandler = Objects.requireNonNull(messageHandler);
     }
 
     @Override
@@ -74,11 +77,16 @@ public class LoginManagerJaas extends LoginManagerImpl implements LoginManager {
 
     @Override
     public boolean isUserInRole(String role) {
-        return false;
+        return this.getUserRoles().contains(role);
     }
 
     @Override
     public boolean isUserInAnyRole(String... roles) {
+        for(String role : roles) {
+            if(getUserRoles().contains(role)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -99,7 +107,7 @@ public class LoginManagerJaas extends LoginManagerImpl implements LoginManager {
 
     @Override
     public boolean isLoggedIn() {
-        return super.getLoggedInUserName(null) == null;
+        return super.getLoggedInUserName(null) != null;
     }
     
     @Override
@@ -109,7 +117,7 @@ public class LoginManagerJaas extends LoginManagerImpl implements LoginManager {
             
             final String msg = "You are already logged in";
             
-            uiSupplier.get().getMessageDialog().showWarningMessage(msg);
+            messageHandler.showWarningMessage(msg);
             
             return true;
             
@@ -136,7 +144,7 @@ public class LoginManagerJaas extends LoginManagerImpl implements LoginManager {
             
             final String msg = "You are already logged out";
             
-            uiSupplier.get().getMessageDialog().showWarningMessage(msg);
+            messageHandler.showWarningMessage(msg);
             
             return true;
             

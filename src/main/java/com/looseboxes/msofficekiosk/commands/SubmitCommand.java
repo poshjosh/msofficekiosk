@@ -32,6 +32,7 @@ import com.looseboxes.msofficekiosk.ui.AppUiContext;
 import java.io.IOException;
 import java.util.logging.Level;
 import com.looseboxes.msofficekiosk.FileNames;
+import com.looseboxes.msofficekiosk.FilePaths;
 import com.looseboxes.msofficekiosk.functions.io.CopyToDir;
 import com.looseboxes.msofficekiosk.net.TestDocSenderFactory;
 import com.looseboxes.msofficekiosk.test.OpenedFileManager;
@@ -92,7 +93,7 @@ public class SubmitCommand extends AbstractCommandWithPreCondition {
         
         final Map<TestDoc, File> attachments = new HashMap(openedDocs.size());
         
-        final Path outboxDir = context.getSetup().getDir(FileNames.DIR_OUTBOX);
+        final Path outboxDir = FilePaths.getDir(FileNames.DIR_OUTBOX);
         
         for(TestDoc testDoc : openedDocs) {
             
@@ -142,7 +143,7 @@ public class SubmitCommand extends AbstractCommandWithPreCondition {
             
             tests.delete(activatedTest);
             
-            final Config<Properties> cfg = context.getConfig(ConfigService.APP_PROTECTED);
+            final Config<Properties> cfg = context.getConfigFactory().getConfig(ConfigService.APP_PROTECTED);
             final boolean delete = cfg.getBoolean(ConfigNames.DELETE_DOCUMENTS_AFTER_SUBMIT, false);
 
             if(delete) {

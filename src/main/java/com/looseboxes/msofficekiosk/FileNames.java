@@ -34,10 +34,4 @@ public interface FileNames {
     String DIR_OUTPUT = "output";
     
     String DIR_TEMP = "temp";
-    
-    String FILE_KEYVALUE_STORE = "keyvalue.store";
-    
-    String FILE_JAAS_CONFIG = "msofficekiosk_jaas_config.config";
-    
-    String RESOURCE_JAAS_CONFIG = "META-INF/msofficekiosk_jaas_config.config";
 }

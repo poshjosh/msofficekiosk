@@ -22,7 +22,6 @@ import com.bc.jaas.loginmodules.SimpleCredentialsValidator;
 import com.looseboxes.msofficekiosk.functions.io.CreateNewFile;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.logging.Logger;
 import javax.security.auth.login.LoginException;
@@ -34,17 +33,15 @@ public class LoginModuleMskiosk extends LoginModuleImpl {
 
     private transient static final Logger LOG = Logger.getLogger(LoginModuleMskiosk.class.getName());
     
-    private transient static final File file = Paths.get("user.home", "dir_sy4jaas", ".jaas", "kv.store").toFile();
-    
     static{
-        if(!file.exists()) {
+        final File keyValueStoreFile = JaasFiles.PATH_KEY_VALUE_STORE.toFile();
+        if( ! keyValueStoreFile.exists()) {
             try{
-                new CreateNewFile().execute(file, Boolean.FALSE);
+                new CreateNewFile().execute(keyValueStoreFile, Boolean.FALSE);
             }catch(IOException e) {
                 throw new RuntimeException(e);
             }
         }
-        new SetAuthLogingConfig(file.getParentFile()).run();
     }
     
     public LoginModuleMskiosk() 
@@ -52,7 +49,7 @@ public class LoginModuleMskiosk extends LoginModuleImpl {
         super(new SimpleCredentialsValidator(
                         (messageSupplier) -> { LOG.fine(() -> messageSupplier.get()); },
                         new CredentialsSupplierJaas(null, "Create New User"), 
-                        file
+                        JaasFiles.PATH_KEY_VALUE_STORE.toFile()
                 )
         );
     }

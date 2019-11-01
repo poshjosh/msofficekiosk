@@ -19,6 +19,7 @@ package com.looseboxes.msofficekiosk.ui;
 import com.bc.config.Config;
 import com.bc.ui.functions.SetLookAndFeel;
 import com.looseboxes.msofficekiosk.FileNames;
+import com.looseboxes.msofficekiosk.FilePaths;
 import com.looseboxes.msofficekiosk.MsKioskSetup;
 import com.looseboxes.msofficekiosk.commands.CommandContext;
 import com.looseboxes.msofficekiosk.test.Tests;
@@ -51,7 +52,6 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.swt.widgets.Display;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -67,44 +67,44 @@ public class UiConfiguration implements UiBeans {
 
     private static final Logger LOG = Logger.getLogger(UiConfiguration.class.getName());
     
-    @Autowired private MsKioskSetup setup;
-    
     @Bean public AppUiContext appUIContext(ApplicationContext springContext, ConfigFactory configFactory) {
         final Config config = configFactory.getConfig(ConfigService.APP_UI);        
         return new AppUiContextImpl(config, getUiSupplier(springContext), getMainWindowSupplier(springContext));
     }
     
     public Supplier<UI> getUiSupplier(ApplicationContext applicationContext) {
-        return setup.isAdmin() ? () -> applicationContext.getBean(AdminUi.class) : 
-                () -> applicationContext.getBean(ExamUi.class);
+        return () -> { 
+            final MsKioskSetup setup = applicationContext.getBean(MsKioskSetup.class);
+            return setup.isAdmin() ? applicationContext.getBean(AdminUi.class) : 
+                applicationContext.getBean(ExamUi.class);
+        
+        };
     }
 
-//    public Supplier<Window> getMainWindowSupplier(ApplicationContext applicationContext) {
-//        return setup.isAdmin() ? () -> applicationContext.getBean(AdminUi.class) : () -> null;
-//    }
     public Supplier<Window> getMainWindowSupplier(ApplicationContext applicationContext) {
         return () -> null;
     }
 
     @Bean @Scope("prototype") public UiLauncher uiLauncher(ApplicationContext applicationContext) {
-        
+        final MsKioskSetup setup = applicationContext.getBean(MsKioskSetup.class);
         return setup.isAdmin() ? new AdminUiLauncher(applicationContext.getBean(AdminUi.class)) : 
                 new ExamUiLauncher(applicationContext.getBean(ExamUi.class));
     }
     
     @Bean public UiBeans.UiConfigurer uiConfigurer(ApplicationContext applicationContext) {
+        final MsKioskSetup setup = applicationContext.getBean(MsKioskSetup.class);
         return setup.isAdmin() ? 
                 new AdminUiConfigurer(getAdminUiConfigurerDir(applicationContext)) : 
                 new ExamUiConfigurerImpl(applicationContext.getBean(CommandContext.class));
     }
     
     public File getAdminUiConfigurerDir(ApplicationContext applicationContext) {
-        return setup.getDir(FileNames.DIR_INBOX).toFile();
+        return FilePaths.getDir(FileNames.DIR_INBOX).toFile();
     }
     
     @Bean(PRECONDITION_FOR_UI_LAUNCH) @Scope("prototype") public Precondition preconditionForUiLaunch(
             ApplicationContext applicationContext, AppUiContext uiContext, ConfigFactory configFactory) {
-
+        final MsKioskSetup setup = applicationContext.getBean(MsKioskSetup.class);
         final Precondition precondition = setup.isAdmin() ? 
                 new PreconditionForAdminUiLaunch() : 
                 new PreconditionForExamUiLaunch(

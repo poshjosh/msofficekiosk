@@ -49,7 +49,7 @@ public class GetEncryption implements Function<AppContext, Encryption> {
     }
     
     public Encryption getOrException(AppContext context) throws GeneralSecurityException {
-        final Config<Properties> config = context.getConfig(ConfigService.APP_INTERNAL);
+        final Config<Properties> config = context.getConfigFactory().getConfig(ConfigService.APP_INTERNAL);
         final String algorithm = config.getString(ConfigNames.SECURITY_ALGORITHM);
         final String encryptionKey = config.getString(ConfigNames.SECURITY_ENCRYPTIONKEY);
         final Encryption encryption = SecurityProvider.DEFAULT.getEncryption(algorithm, encryptionKey);

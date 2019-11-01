@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
 /**
  * @author Chinomso Bassey Ikwuagwu on Mar 29, 2019 6:46:14 PM
  */
+@FunctionalInterface
 public interface MessageDialog {
 
     default void showWarningMessage(String message) {

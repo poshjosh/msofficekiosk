@@ -48,7 +48,6 @@ import java.io.IOException;
 import java.util.Properties;
 import okhttp3.CookieJar;
 import okhttp3.OkHttpClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
@@ -97,20 +96,11 @@ public class MsKioskConfiguration {
     
     public static final String DEFAULT_CACHE_NAME = "mskiosk.cache.default";
     
-    @Autowired private MsKioskSetup setup;
-    
     @Bean public AppContext appContext() {
-        try{
-            
-            final  AppContext appContext = new AppContextImpl(setup);
-            
-            appContext.init();
-            
-            return appContext;
-            
-        }catch(IOException e) {
-            throw new RuntimeException(e);
-        }
+
+        final  AppContext appContext = new AppContextImpl();
+
+        return appContext;
     }
     
     @Bean @Scope("prototype") public TestDocumentBuilder testDocumentBuilder(
@@ -132,7 +122,7 @@ public class MsKioskConfiguration {
     }
 
     @Bean DocumentStore documentStore(
-            MsKioskSetup setup, ConfigFactory configFactory, 
+            ConfigFactory configFactory, 
             @Qualifier(MsKioskConfiguration.DEFAULT_CACHE_NAME) Cache cache,
             RequestClientProvider requestClientProvider,
             CredentialsSupplier credentialsSupplier) {
@@ -141,7 +131,7 @@ public class MsKioskConfiguration {
         
         final DiskLruCacheIx diskLruCache = (DiskLruCacheIx)cache.getDelegate();
         
-        return new DocumentStoreImpl(setup.getDir(FileNames.DIR_TEMP), 
+        return new DocumentStoreImpl(FilePaths.getDir(FileNames.DIR_TEMP), 
                 configFactory, requestClient, credentialsSupplier, diskLruCache);
     }
     
@@ -149,20 +139,12 @@ public class MsKioskConfiguration {
         return new CredentialsSupplierFromLoggedInUser(loginManager);
     }
 
-    @Lazy @Autowired private ConfigFactory configFactory; 
-    @Lazy @Autowired private SyncDataWithServer syncDataWithServer;
-    @Lazy @Autowired private GetDevicedetails devicedetailsProvider;
-    @Lazy @Autowired private Mapper mapper;
-    
-    @Bean @Scope("prototype") public Login login() {
-        return login(configFactory, syncDataWithServer, devicedetailsProvider, mapper);
-    }
-
-    public Login login(
-            ConfigFactory configFactory,
-            SyncDataWithServer syncDataWithServer,
-            GetDevicedetails devicedetailsProvider,
-            Mapper mapper) {
+    @Bean @Scope("prototype") public Login login(ApplicationContext spring) {
+        final ConfigFactory configFactory = spring.getBean(ConfigFactory.class);
+        final SyncDataWithServer syncDataWithServer = spring.getBean(SyncDataWithServer.class);
+        final GetDevicedetails devicedetailsProvider = spring.getBean(GetDevicedetails.class);
+        final Mapper mapper = spring.getBean(Mapper.class);
+                    
         final Config config = configFactory.getConfig(ConfigService.APP_PROTECTED);
         final Login login = new LoginToServer(
                 syncDataWithServer,
@@ -173,11 +155,12 @@ public class MsKioskConfiguration {
         return login;
     }
 
-    @Bean public LoginManager loginManager(AppContext app, Login login, 
-            MessageDialog messageDialog, ApplicationContext spring) {
+    @Bean public LoginManager loginManager(ApplicationContext spring) {
        
-        final Config uiConfig = app.getConfig(ConfigService.APP_UI);
-        
+        final AppContext app = spring.getBean(AppContext.class);
+        final Config uiConfig = app.getConfigFactory().getConfig(ConfigService.APP_UI);
+        final Login login = spring.getBean(Login.class);
+        final MessageDialog messageDialog = spring.getBean(MessageDialog.class);
         final LoginManager loginManager = new LoginManagerImpl(
                 login,
                 new CredentialsSupplierFromUserPrompt(uiConfig, false),
@@ -196,9 +179,11 @@ public class MsKioskConfiguration {
     @Bean @Scope("prototype") public PreconditionLogin preconditionLogin(LoginManager loginManager) {
         return new PreconditionLogin(loginManager);
     }
-    
-    @Bean(DEFAULT_CACHE_NAME) public Cache cache(DiskLruCacheContext dcc, Mapper mapper) {
-        return new CacheProvider(dcc, setup.getDir(FileNames.DIR_CACHE), mapper).apply(DEFAULT_CACHE_NAME);
+//    @Bean(DEFAULT_CACHE_NAME) public Cache cache(DiskLruCacheContext dcc, Mapper mapper) {
+    @Bean(DEFAULT_CACHE_NAME) public Cache cache(ApplicationContext spring) {
+        final DiskLruCacheContext dcc = spring.getBean(DiskLruCacheContext.class);     
+        final Mapper mapper = spring.getBean(Mapper.class);    
+        return new CacheProvider(dcc, FilePaths.getDir(FileNames.DIR_CACHE), mapper).apply(DEFAULT_CACHE_NAME);
     }
     
     @Bean public DiskLruCacheContext diskLruCacheContext(ConfigFactory configFactory) {
@@ -286,9 +271,10 @@ public class MsKioskConfiguration {
         return new SimpleResponseHandler(messageDialog);
     }
 
-    @Bean public SaveFileMessages saveFileMessages(ConfigFactory configFactory) {
+    @Bean public SaveFileMessages saveFileMessages(ApplicationContext spring) {
+        final ConfigFactory configFactory = spring.getBean(ConfigFactory.class);
         final Charset charset = getCharset(configFactory);
-        final File file = setup.getDir(FileNames.DIR_INBOX).toFile();
+        final File file = FilePaths.getDir(FileNames.DIR_INBOX).toFile();
         return new SaveFileMessagesNotifyUser(file, 8192, charset);
     }
     
@@ -317,7 +303,7 @@ public class MsKioskConfiguration {
     }
     
     @Bean public ConfigFactory configFactory() {
-        return new ConfigFactoryImpl(setup.getHomeDir());
+        return new ConfigFactoryImpl(FilePaths.getHomeDir());
     }
 
     @Bean(ConfigService.APP_PROTECTED) @Scope("prototype") public Config<Properties> getConfig(

@@ -352,7 +352,7 @@ public class ExamUiImpl implements ExamUi {
         final int timerIntervalMillis = (int)TimeUnit.SECONDS.toMillis(_valueInSeconds);
         final Label timerLabel = shell.getTimerLabel();
         final RunTimerCommand.TickListener tickListener = new TickListenerImpl(
-                context, display,
+                context.getConfigFactory(), display,
                 (timer) -> !timerLabel.isDisposed() && timerLabel.isVisible(), 
                 (timer) -> timer.getMillisTill(endTimeMillis), 
                 (text) -> timerLabel.setText(text)
@@ -366,7 +366,7 @@ public class ExamUiImpl implements ExamUi {
         final long _valueInSeconds = this.getConfig(ConfigService.APP_INTERNAL).getLong(ConfigNames.AUTOSAVE_INTERVAL_SECONDS, 10);
         final int autoSaveIntervalMillis = (int)TimeUnit.SECONDS.toMillis(_valueInSeconds);
         final RunTimerCommand.TickListener tickListener = new TickListenerImpl(
-                context, display,
+                context.getConfigFactory(), display,
                 (timer) -> true, 
                 (timer) -> timer.getTimeElapsedMillis(), 
                 (text) -> {

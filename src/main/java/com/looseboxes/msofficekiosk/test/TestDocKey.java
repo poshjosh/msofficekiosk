@@ -71,7 +71,7 @@ public class TestDocKey implements Serializable {
 
     public TestDocKey(AppContext context, LoginManager loginManager, TestDoc testDoc) {
         this(new GetOutputFileUsernameEncryption().apply(context).orElse(null), 
-                context, loginManager, testDoc);
+                context.getConfigFactory(), loginManager, testDoc);
     }
     
     public TestDocKey(Encryption encryption, ConfigFactory configFactory,

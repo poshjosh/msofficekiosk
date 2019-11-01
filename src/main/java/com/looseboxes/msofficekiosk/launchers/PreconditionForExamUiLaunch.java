@@ -19,6 +19,7 @@ package com.looseboxes.msofficekiosk.launchers;
 import com.bc.elmi.pu.entities.Document;
 import com.looseboxes.msofficekiosk.exceptions.StartupException;
 import com.bc.elmi.pu.entities.Test;
+import com.bc.elmi.pu.entities.Unit;
 import com.bc.ui.UIContext;
 import com.looseboxes.msofficekiosk.MsKioskSetup;
 import com.looseboxes.msofficekiosk.test.Tests;
@@ -48,6 +49,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.validation.ValidationException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
@@ -190,10 +192,11 @@ public class PreconditionForExamUiLaunch implements Precondition<MsKioskSetup>{
 //                    ".\nYou may wish to edit an existing Test to make it due.\n";
                     ".\nHere are your options.\n";
             
-            final String option = (String)JOptionPane.showInputDialog(null, m, "No Pending Test", 
+            final String _opt = (String)JOptionPane.showInputDialog(null, m, "No Pending Test", 
                     JOptionPane.PLAIN_MESSAGE, icon, options, options[0]);
+            LOG.log(Level.FINE, "User selection: {0}", _opt);
             
-            LOG.info("Option: " + option);
+            final String option = _opt == null ? quit : _opt;
             
 //            final int index = JOptionPane.showOptionDialog(null, m, "No Pending Test", 
 //                    JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, icon, options, options[0]);
@@ -215,6 +218,15 @@ public class PreconditionForExamUiLaunch implements Precondition<MsKioskSetup>{
                 case create:
                 default:
                     final Test test = editTest.apply(new Test());
+
+                    final Optional<String> unitnameOpt = loginManager.getUserGroup();
+                    final Unit unit = new Unit((short)0);
+                    if(unitnameOpt.isPresent()) {
+                        unit.setUnitname(unitnameOpt.get());
+                    }
+                    unit.setTestList(new ArrayList(Arrays.asList(test)));
+                    test.setUnitList(new ArrayList(Arrays.asList(unit)));
+
                     tests.setUserCreatedTest(test);
                     tests.activateTest(test, loginManager);
                     return test(setup);

@@ -233,7 +233,7 @@ public class CommandContextImpl implements CommandContext {
     public Callable<Boolean> getSaveCommand(Predicate<Display> preCondition, 
             OleClientSite oleClientSite, File outputFile) {
         
-        final ConfigData config = context.getConfig(ConfigService.APP_PROTECTED);
+        final ConfigData config = context.getConfigFactory().getConfig(ConfigService.APP_PROTECTED);
         
         return new SaveCommand(
                 oleClientSite, outputFile, 

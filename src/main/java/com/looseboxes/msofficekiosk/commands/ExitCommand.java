@@ -34,7 +34,7 @@ public class ExitCommand implements Callable{
         this.test = Objects.requireNonNull(test);
         this.app = Objects.requireNonNull(app);
         this.ui = Objects.requireNonNull(ui);
-        this.exitSystemOnExit = app.getConfig(ConfigService.APP_INTERNAL)
+        this.exitSystemOnExit = app.getConfigFactory().getConfig(ConfigService.APP_INTERNAL)
                 .getBoolean(ConfigNamesInternal.EXIT_SYSTEM_ON_UI_EXIT);
         LOG.fine(() -> ConfigNamesInternal.EXIT_SYSTEM_ON_UI_EXIT + " = " + exitSystemOnExit);
     }

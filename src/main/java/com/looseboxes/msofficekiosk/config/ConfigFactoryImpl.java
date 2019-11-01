@@ -30,10 +30,11 @@ import java.util.Properties;
 public class ConfigFactoryImpl implements ConfigFactory {
 
     private final Map<String, Config<Properties>> configs;
-    
+
     private final Path homeDir;
     
     public ConfigFactoryImpl(Path homeDir) {
+        homeDir = homeDir.toAbsolutePath().normalize();
         this.homeDir = Objects.requireNonNull(homeDir);
         this.configs = new HashMap<>();
     }
@@ -49,7 +50,7 @@ public class ConfigFactoryImpl implements ConfigFactory {
     }
 
     @Override
-    public void init() throws IOException{
+    public void loadConfigs() throws IOException{
         this.loadAndCacheConfig(ConfigService.APP_INTERNAL); 
         this.loadAndCacheConfig(ConfigService.APP_PROTECTED);
         this.loadAndCacheConfig(ConfigService.APP_UI); 

@@ -70,7 +70,7 @@ public class TestDocSenderFactoryImpl implements TestDocSenderFactory {
         switch(id) {
             case SEND_TO_SERVER:
                 output = new SendTestDocsToServer(
-                        httpClient, app, documentBuilder, 
+                        httpClient, app.getConfigFactory(), documentBuilder, 
                         credentialsSupplier, mapper, uiContext);
                 break;
 //            case SEND_TO_SOCKET:

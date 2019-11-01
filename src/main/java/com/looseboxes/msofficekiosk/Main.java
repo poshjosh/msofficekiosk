@@ -16,18 +16,22 @@
 
 package com.looseboxes.msofficekiosk;
 
+import com.looseboxes.msofficekiosk.commands.CommandConfiguration;
 import com.looseboxes.msofficekiosk.commands.ExitCommand;
 import com.looseboxes.msofficekiosk.functions.ui.DisplayException;
 import com.looseboxes.msofficekiosk.functions.ui.LaunchTypeFromUserSelectionSupplier;
 import com.looseboxes.msofficekiosk.launchers.LauncherFactory;
+import com.looseboxes.msofficekiosk.security.LoginManager;
+import com.looseboxes.msofficekiosk.ui.UiConfiguration;
+import com.looseboxes.msofficekiosk.ui.admin.AdminUiConfiguration;
+import com.looseboxes.msofficekiosk.ui.exam.ExamUiConfiguration;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.TimeZone;
+import javax.swing.JOptionPane;
 
 /**
  * @author Chinomso Bassey Ikwuagwu on May 3, 2018 12:44:36 PM
@@ -36,8 +40,6 @@ public class Main {
 
     private static final Logger LOG = Logger.getLogger(Main.class.getName());
     
-    public static final Path DIR_HOME = Paths.get(System.getProperty("user.home"), "msofficekiosk");
-
     public static void main(String [] args) {
 
         try{
@@ -48,9 +50,12 @@ public class Main {
             
             LOG.log(Level.INFO, "Default TimeZone: {0}", TimeZone.getDefault());
             
-            final MsKioskSetup setup = new MsKioskSetupDev(args, DIR_HOME);
+            final MsKioskSetup setup = new MsKioskSetupDev(args, FilePaths.DIR_HOME);
 
-            final Class<?> [] configClasses = setup.getConfigClasses();
+            final Class<?> [] configClasses = 
+//                    new Class[]{MsKioskConfiguration.class, CommandConfiguration.class, 
+                    new Class[]{MsKioskConfigurationLocalLogin.class, CommandConfiguration.class, 
+                    UiConfiguration.class, AdminUiConfiguration.class, ExamUiConfiguration.class};
 
             final ConfigurableApplicationContext ctx = new AnnotationConfigApplicationContext(configClasses);
             
@@ -70,6 +75,21 @@ public class Main {
             if(launchType == LauncherFactory.Type.None) {
                 new ExitCommand(ctx.getBean(AppContext.class)).call();
             }
+            
+            System.out.println("0 -----------------------------");
+            while( ! ctx.getBean(LoginManager.class).promptUserLogin(2)) {
+            
+                System.out.println("a -----------------------------");
+                JOptionPane.showMessageDialog(null, "Hello!");
+                System.out.println("b -----------------------------");
+                
+                if(true) {
+                    System.out.println("c -----------------------------");
+                    new ExitCommand(ctx.getBean(AppContext.class)).call();
+                    break;
+                }
+            }
+            System.out.println("1 -----------------------------");
 
             setup.launchApp(launchType);
             

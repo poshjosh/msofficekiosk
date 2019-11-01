@@ -32,7 +32,7 @@ public class GetOutputFileUsernameEncryption implements Function<AppContext, Opt
 
     @Override
     public Optional<Encryption> apply(AppContext context) {
-        final Config<Properties> appConfig = context.getConfig(ConfigService.APP_PROTECTED);
+        final Config<Properties> appConfig = context.getConfigFactory().getConfig(ConfigService.APP_PROTECTED);
         final boolean encrypt = appConfig.getBoolean(ConfigNames.OUTPUTFILE_ENCRYPT_USERNAME, false);
         final Encryption output;
         if(encrypt) {

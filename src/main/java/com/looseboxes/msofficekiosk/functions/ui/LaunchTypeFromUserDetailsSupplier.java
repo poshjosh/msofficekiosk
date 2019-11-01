@@ -40,6 +40,7 @@ public class LaunchTypeFromUserDetailsSupplier implements Supplier<LauncherFacto
     private final Path homeDir;
 
     public LaunchTypeFromUserDetailsSupplier(Path homeDir) {
+        homeDir = homeDir.toAbsolutePath().normalize();
         this.homeDir = Objects.requireNonNull(homeDir);
     }
 

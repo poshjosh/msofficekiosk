@@ -18,6 +18,7 @@ package com.looseboxes.msofficekiosk.ui.exam;
 import com.looseboxes.msofficekiosk.ui.exam.ShowUiTill;
 import com.bc.config.Config;
 import com.bc.ui.UIContext;
+import com.looseboxes.msofficekiosk.FilePaths;
 import com.looseboxes.msofficekiosk.Main;
 import com.looseboxes.msofficekiosk.config.ConfigFactory;
 import com.looseboxes.msofficekiosk.config.ConfigFactoryImpl;
@@ -43,7 +44,7 @@ public class ShowUiTillTest {
             final int advanceMilli = 5_000;
             final String string = "<html><br/><b>Test Name: </b>RIC International Relations." +
                     "<br/><br/><b>Duration: </b> 120 minutes</html>";
-            final ConfigFactory configFactory = new ConfigFactoryImpl(Main.DIR_HOME);
+            final ConfigFactory configFactory = new ConfigFactoryImpl(FilePaths.DIR_HOME);
             final Config config = configFactory.getConfig(ConfigService.APP_UI);
             final UIContext uiContext = new AppUiContextImpl(config, () -> new UiImpl());
             final ShowUiTill instance = new ShowUiTill(uiContext, string, (System.currentTimeMillis() + advanceMilli));

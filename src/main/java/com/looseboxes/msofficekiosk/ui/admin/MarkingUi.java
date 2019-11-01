@@ -179,7 +179,7 @@ public class MarkingUi implements SelectionListener {
         final int autoSaveIntervalMillis = (int)TimeUnit.SECONDS.toMillis(_valueInSeconds);
         final String charset = config.getString(ConfigNames.CHARACTER_SET);
         final RunTimerCommand.TickListener tickListener = new TickListenerImpl(
-                app, this.shell.getDisplay(),
+                app.getConfigFactory(), this.shell.getDisplay(),
                 (timer) -> ! this.shell.getDisplay().isDisposed(), 
                 (timer) -> timer.getTimeElapsedMillis(), 
                 (text) -> {

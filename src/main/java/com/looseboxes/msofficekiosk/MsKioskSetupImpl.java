@@ -18,7 +18,6 @@ package com.looseboxes.msofficekiosk;
 
 import com.bc.config.Config;
 import com.bc.socket.io.functions.GetLocalIpAddress;
-import com.looseboxes.msofficekiosk.commands.CommandConfiguration;
 import com.looseboxes.msofficekiosk.config.ConfigFactory;
 import com.looseboxes.msofficekiosk.config.ConfigFactoryImpl;
 import com.looseboxes.msofficekiosk.config.ConfigNames;
@@ -32,12 +31,8 @@ import com.looseboxes.msofficekiosk.exceptions.StartupException;
 import com.looseboxes.msofficekiosk.functions.IsServerIp;
 import com.looseboxes.msofficekiosk.launchers.UiLauncher;
 import com.looseboxes.msofficekiosk.ui.UiBeans;
-import com.looseboxes.msofficekiosk.ui.UiConfiguration;
-import com.looseboxes.msofficekiosk.ui.admin.AdminUiConfiguration;
-import com.looseboxes.msofficekiosk.ui.exam.ExamUiConfiguration;
 import com.looseboxes.msofficekiosk.validators.Precondition;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
@@ -56,13 +51,9 @@ public class MsKioskSetupImpl implements MsKioskSetup {
 
     private static final Logger LOG = Logger.getLogger(MsKioskSetupImpl.class.getName());
     
-    private final Path homeDir;
-    
     private final String loggingConfigFile;
     
     private final ConfigFactory configFactory;
-    
-    private final Class<?> [] configClasses;
     
     private LauncherFactory.Type launchType;
     
@@ -70,11 +61,11 @@ public class MsKioskSetupImpl implements MsKioskSetup {
 
     public MsKioskSetupImpl(String [] args, Path homeDir,
             Consumer<String> addNamedJar, String loggingConfigFile) {
-        this.homeDir = homeDir.toAbsolutePath().normalize();
+
+        homeDir = homeDir.toAbsolutePath().normalize();
+
         this.loggingConfigFile = loggingConfigFile;
         this.configFactory = new ConfigFactoryImpl(homeDir);
-        this.configClasses = new Class[]{MsKioskConfiguration.class, CommandConfiguration.class, 
-                UiConfiguration.class, AdminUiConfiguration.class, ExamUiConfiguration.class};
         try{
             
             final AtomicBoolean swtJarAdded = new AtomicBoolean(false);
@@ -169,24 +160,15 @@ public class MsKioskSetupImpl implements MsKioskSetup {
     }
 
     @Override
+    public Path getDir(String name) {
+        return FilePaths.getDir(name);
+    }
+
+    @Override
     public boolean isAdmin(LauncherFactory.Type launchType) {
         return launchType == LauncherFactory.Type.Academic_Staff || 
                 launchType == LauncherFactory.Type.IT_Admin ||
                 launchType == LauncherFactory.Type.Background;
-    }
-
-    @Override
-    public Path getDir(String name) {
-        final Path dir = homeDir.resolve(name);
-        if( ! Files.exists(dir)) {
-            try{
-                Files.createDirectories(dir);
-                LOG.log(Level.INFO, "Created dir: {0}", dir);
-            }catch(Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return dir;
     }
 
     private void requireRegistered() {
@@ -201,18 +183,8 @@ public class MsKioskSetupImpl implements MsKioskSetup {
     }
 
     @Override
-    public Class<?>[] getConfigClasses() {
-        return configClasses;
-    }
-
-    @Override
     public String getLoggingConfigFile() {
         return loggingConfigFile;
-    }
-    
-    @Override
-    public Path getHomeDir() {
-        return homeDir;
     }
     
     @Override

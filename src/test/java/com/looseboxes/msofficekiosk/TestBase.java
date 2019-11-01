@@ -110,7 +110,7 @@ public class TestBase {
         }
         @Override
         public File getFile(TestDocKey testKey, String extension) {
-            return Main.DIR_HOME.resolve(FileNames.DIR_OUTPUT).resolve(testKey + "." + extension).toFile();
+            return FilePaths.DIR_HOME.resolve(FileNames.DIR_OUTPUT).resolve(testKey + "." + extension).toFile();
         }
     }
     
@@ -163,7 +163,7 @@ public class TestBase {
         .retryOnConnectionFailure(true) 
         .cookieJar(cookieJar).build(); 
 
-        configFactory = new ConfigFactoryImpl(Main.DIR_HOME);
+        configFactory = new ConfigFactoryImpl(FilePaths.DIR_HOME);
         
 ////////////////////////////////////////        
 //        final Config config = configFactory.getConfig(ConfigService.APP_PROTECTED);
@@ -175,7 +175,7 @@ public class TestBase {
 //        }
 /////////////////////////////////////////
 
-        loginManager = new OneOffLoginManagerProvider(cookieJar).get(Main.DIR_HOME);
+        loginManager = new OneOffLoginManagerProvider(cookieJar).get(FilePaths.DIR_HOME);
         credentialsSupplier = new CredentialsSupplierFromLoggedInUser(loginManager);
         testFileProvider = new MyTestFileProvider(configFactory, loginManager);
         final Config config = configFactory.getConfig(ConfigService.APP_UI);
@@ -185,7 +185,7 @@ public class TestBase {
         mapper = new MapperJackson();
 
         cacheContext = new DiskLruCacheContextImpl(10_000_000);
-        cacheProvider = new CacheProvider(cacheContext, Main.DIR_HOME.resolve(FileNames.DIR_CACHE), mapper);
+        cacheProvider = new CacheProvider(cacheContext, FilePaths.DIR_HOME.resolve(FileNames.DIR_CACHE), mapper);
         cache = cacheProvider.apply(MsKioskConfiguration.DEFAULT_CACHE_NAME);
         
         tests = new TestsImpl(cache);
@@ -197,7 +197,7 @@ public class TestBase {
         credentials.put("password", PWD);
         
         final RequestClient requestClient = requestClientProvider.get((response) -> response);
-        documentStore = new DocumentStoreImpl(Main.DIR_HOME.resolve(FileNames.DIR_TEMP), 
+        documentStore = new DocumentStoreImpl(FilePaths.DIR_HOME.resolve(FileNames.DIR_TEMP), 
                 configFactory, 
                 requestClient, 
                 () -> credentials, 

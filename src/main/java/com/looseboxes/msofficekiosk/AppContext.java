@@ -16,17 +16,23 @@
 
 package com.looseboxes.msofficekiosk;
 
+import com.bc.config.Config;
 import com.looseboxes.msofficekiosk.test.OpenedFileManager;
 import com.bc.socket.io.BcSocketServer;
 import com.bc.socket.io.BcSocketClient;
 import com.bc.socket.io.messaging.data.Devicedetails;
 import com.looseboxes.msofficekiosk.config.ConfigFactory;
+import java.util.Properties;
 
 /**
  * @author Chinomso Bassey Ikwuagwu on May 26, 2018 4:28:34 AM
  */
-public interface AppContext extends ConfigFactory{
+public interface AppContext{
 
+    Config<Properties> getConfig(String id);
+    
+    ConfigFactory getConfigFactory();
+    
     MsKioskSetup getSetup();
     
     Devicedetails getDevicedetails();

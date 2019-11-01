@@ -81,7 +81,7 @@ public class SaveFileMessagesNotifyUser extends SaveFileMessagesImpl {
     }
     
     public boolean isToBeep() {
-        final boolean beep = appContext.getConfig(ConfigService.APP_PROTECTED)
+        final boolean beep = appContext.getConfigFactory().getConfig(ConfigService.APP_PROTECTED)
                 .getBoolean(ConfigNames.BEEP_ON_INCOMING_MESSAGE_RECEIVED, true);
         return beep;
     }

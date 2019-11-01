@@ -31,7 +31,7 @@ import com.bc.socket.io.BcSocketClient;
 import com.bc.socket.io.messaging.SaveFileMessages;
 import com.bc.socket.io.messaging.data.Devicedetails;
 import com.bc.util.Util;
-import com.looseboxes.msofficekiosk.config.ConfigFactoryImpl;
+import com.looseboxes.msofficekiosk.config.ConfigFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import com.looseboxes.msofficekiosk.config.ConfigService;
@@ -46,7 +46,7 @@ import com.looseboxes.msofficekiosk.security.LoginManager;
 /**
  * @author Chinomso Bassey Ikwuagwu on May 26, 2018 5:03:42 AM
  */
-public class AppContextImpl extends ConfigFactoryImpl implements AppContext {
+public class AppContextImpl implements AppContext {
 
     private transient static final Logger LOG = Logger.getLogger(AppContextImpl.class.getName());
     
@@ -62,7 +62,7 @@ public class AppContextImpl extends ConfigFactoryImpl implements AppContext {
     
     @Lazy @Autowired private ComboEndpointTask dataUpdateTask;
 
-    private final MsKioskSetup setup;
+    @Lazy @Autowired private MsKioskSetup setup;
 
     //@todo make a property
     private final int stopTimeoutMillis = 3_000;
@@ -73,10 +73,7 @@ public class AppContextImpl extends ConfigFactoryImpl implements AppContext {
     
     private boolean shutdown;
     
-    public AppContextImpl(MsKioskSetup setup) {
-        super(setup.getHomeDir());
-        this.setup = Objects.requireNonNull(setup);
-    }
+    public AppContextImpl() { }
 
     @Override
     public Devicedetails getDevicedetails() {
@@ -233,7 +230,52 @@ public class AppContextImpl extends ConfigFactoryImpl implements AppContext {
     }
 
     @Override
+    public Config<Properties> getConfig(String id) {
+        return getConfigFactory().getConfig(id);
+    }
+    
+    @Override
+    public ConfigFactory getConfigFactory() {
+        return getSetup().getConfigFactory();
+    }
+
+    @Override
     public MsKioskSetup getSetup() {
         return setup;
     }
 }
+/**
+ * 
+
+    @Override
+    public void clear() {
+        getSetup().getConfigFactory().clear();
+    }
+
+    @Override
+    public void clear(String id) {
+        getSetup().getConfigFactory().clear(id);
+    }
+
+    @Override
+    public void saveConfig(Config config, String id) throws IOException {
+        getSetup().getConfigFactory().saveConfig(config, id);
+    }
+
+    @Override
+    public ConfigService createConfigService(String id) {
+        return getSetup().getConfigFactory().createConfigService(id);
+    }
+
+    @Override
+    public void loadConfigs() throws IOException {
+        getSetup().getConfigFactory().loadConfigs();
+    }
+
+    @Override
+    public Config<Properties> loadConfig(String id) throws IOException {
+        return getSetup().getConfigFactory().loadConfig(id);
+    }
+
+ * 
+ */

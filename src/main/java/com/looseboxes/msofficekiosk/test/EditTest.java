@@ -46,34 +46,41 @@ public class EditTest implements UnaryOperator<Test>{
     
     @Override
     public Test apply(Test target) {
-        
+
+        final String testIdLabel = "Test ID";
+        final Integer defaultTestId = 0;
         final String timeFormat = "HH:mm";
         final String startTimeLabel = "Start Time (" + timeFormat + " e.g 09:30)"; 
         final String durationLabel = "Duration (in minutes)"; 
+        final Integer defaultDuration = 60;
 
         final Map inputMap = new LinkedHashMap();
-        if(target.getTestname() == null) {
-            target.setTestname("");
+        if(target.getTestid() == null) {
+            inputMap.put(testIdLabel, defaultTestId);
         }
-        inputMap.put(TestDocKey.TEST_NAME, target.getTestname());
+        final String testname = target.getTestname() == null ? "" : target.getTestname();
+        inputMap.put(TestDocKey.TEST_NAME, testname);
         inputMap.put(startTimeLabel, "");
-        if(target.getDurationinminutes() == null) {
-            target.setDurationinminutes(60);
-        }
-        inputMap.put(durationLabel, target.getDurationinminutes());
+        final Integer dur = target.getDurationinminutes() == null ? defaultDuration : target.getDurationinminutes();
+        inputMap.put(durationLabel, dur);
         
         final Config uiConfig = configFactory.getConfig(ConfigService.APP_UI);
         
-        final Map idParams = new MultiInputDialog(uiConfig).apply(inputMap, "Enter Test Details");
+        final Map outputMap = new MultiInputDialog(uiConfig).apply(inputMap, "Enter Test Details");
+        
+        final Integer testId = (Integer)outputMap.getOrDefault(testIdLabel, null);
+        if(testId != null && !defaultTestId.equals(testId)) {
+            target.setTestid(testId);
+            LOG.log(Level.FINE, "Updated test ID to: {0}", testId);
+        }
 
-        final String name = (String)idParams.getOrDefault(TestDocKey.TEST_NAME, null);
+        final String name = (String)outputMap.getOrDefault(TestDocKey.TEST_NAME, null);
         if(name != null && !name.isEmpty()) {
-            
             target.setTestname(name);
             LOG.log(Level.FINE, "Updated name to: {0}", name);
         }
         
-        final String timeStr = (String)idParams.getOrDefault(startTimeLabel, null);
+        final String timeStr = (String)outputMap.getOrDefault(startTimeLabel, null);
         if(timeStr != null && !timeStr.isEmpty()) {
             final Date time;
             try{
@@ -87,10 +94,10 @@ public class EditTest implements UnaryOperator<Test>{
             }
         }
         
-        final Integer duration = (Integer)idParams.getOrDefault(durationLabel, null);
-        if(duration != null && duration > 0) {
+        final Integer duration = (Integer)outputMap.getOrDefault(durationLabel, null);
+        if(duration != null && !defaultDuration.equals(duration)) {
             target.setDurationinminutes(duration);
-            LOG.log(Level.FINE, "Updated duration to: {0} minutes", target);
+            LOG.log(Level.FINE, "Updated duration to: {0} minutes", duration);
         }
         
         return target;

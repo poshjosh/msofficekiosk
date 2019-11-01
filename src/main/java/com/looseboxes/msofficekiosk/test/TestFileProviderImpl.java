@@ -18,6 +18,7 @@ package com.looseboxes.msofficekiosk.test;
 
 import com.looseboxes.msofficekiosk.AppContext;
 import com.looseboxes.msofficekiosk.FileNames;
+import com.looseboxes.msofficekiosk.FilePaths;
 import com.looseboxes.msofficekiosk.security.LoginManager;
 import java.io.File;
 import java.nio.file.Path;
@@ -37,7 +38,7 @@ public class TestFileProviderImpl implements TestFileProvider {
         this.app = Objects.requireNonNull(app);
         this.tests = Objects.requireNonNull(tests);
         this.loginManager = Objects.requireNonNull(loginManager);
-        this.dir = app.getSetup().getDir(FileNames.DIR_OUTPUT);
+        this.dir = FilePaths.getDir(FileNames.DIR_OUTPUT);
     }
 
     @Override

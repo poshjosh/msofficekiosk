@@ -35,7 +35,7 @@ public interface ConfigFactory {
 
     Config<Properties> getConfig(String id);
 
-    void init() throws IOException;
+    void loadConfigs() throws IOException;
 
     Config<Properties> loadConfig(String id)throws IOException;
 

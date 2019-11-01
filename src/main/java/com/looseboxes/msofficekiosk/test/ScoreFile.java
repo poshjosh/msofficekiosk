@@ -18,6 +18,7 @@ package com.looseboxes.msofficekiosk.test;
 
 import com.looseboxes.msofficekiosk.AppContext;
 import com.looseboxes.msofficekiosk.FileNames;
+import com.looseboxes.msofficekiosk.FilePaths;
 import java.io.File;
 import java.util.Objects;
 import java.util.Optional;
@@ -44,7 +45,7 @@ public class ScoreFile {
         
         final String fname = toScoreFile(testFile.getName());
 
-        return new File(app.getSetup().getDir(FileNames.DIR_OUTPUT).toFile(), fname);
+        return new File(FilePaths.getDir(FileNames.DIR_OUTPUT).toFile(), fname);
     }
     
     public String toScoreFile(String testFilename) {

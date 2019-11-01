@@ -16,10 +16,6 @@
 
 package com.looseboxes.msofficekiosk;
 
-import com.looseboxes.msofficekiosk.FileNames;
-import com.looseboxes.msofficekiosk.Cache;
-import com.looseboxes.msofficekiosk.MsKioskConfiguration;
-import com.looseboxes.msofficekiosk.Main;
 import com.looseboxes.msofficekiosk.mapper.Mapper;
 import com.looseboxes.msofficekiosk.mapper.MapperJackson;
 import com.bc.diskcache.DiskLruCacheContext;
@@ -40,7 +36,7 @@ public class PrintCacheAndMaybeClearDefaultCache {
             final DiskLruCacheContext dcc = new DiskLruCacheContextImpl(10_000_000);
             final Mapper mapper = new MapperJackson();
             final Cache cache = new CacheProvider(
-                    dcc, Main.DIR_HOME.resolve(FileNames.DIR_CACHE), mapper)
+                    dcc, FilePaths.DIR_HOME.resolve(FileNames.DIR_CACHE), mapper)
                     .apply(MsKioskConfiguration.DEFAULT_CACHE_NAME);
 
             final String [] arr = {

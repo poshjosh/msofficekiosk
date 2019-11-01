@@ -29,12 +29,6 @@ public interface MsKioskSetup extends ApplicationContextInitializer{
     
     void launchApp(LauncherFactory.Type launchType);
 
-    Class<?>[] getConfigClasses();
-
-    Path getDir(String name);
-
-    Path getHomeDir();
-
     LauncherFactory.Type getLaunchType();
 
     String getLoggingConfigFile();
@@ -51,6 +45,8 @@ public interface MsKioskSetup extends ApplicationContextInitializer{
 
     //    @Override
     boolean isServerHost(String host);
+    
+    Path getDir(String name);
 
     ConfigFactory getConfigFactory();
 }
