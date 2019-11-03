@@ -89,7 +89,7 @@ public class SubmitCommand extends AbstractCommandWithPreCondition {
         
         LOG.fine(() -> "Sample: " + key);
         
-        final String subject = activatedTest.getTestname() + '_' + key.getSyndicate() + '_' + key.getUsernameEncrypted();
+        final String subject = activatedTest.getTestname() + '_' + key.getStudentgroup() + '_' + key.getStudentnameEncrypted();
         
         final Map<TestDoc, File> attachments = new HashMap(openedDocs.size());
         
