@@ -45,8 +45,8 @@ public class TestDocKey implements Serializable {
     public static final String SEPARATOR = "__";
             
     public static final String TEST_NAME = "Test Name";
-    public static final String SYNDICATE = "Syndicate";
-    public static final String USER_NAME = "User Name";
+    public static final String STUDENT_GROUP = "Student Group";
+    public static final String STUDENT_NAME = "Student Name";
     public static final String DOCUMENT_NAME = "Document Name";
     
     private final String basename;
@@ -55,11 +55,11 @@ public class TestDocKey implements Serializable {
     
     private final String testname;
     
-    private final String syndicate;
+    private final String studentgroup;
     
-    private final String username;
+    private final String studentname;
     
-    private final String usernameEncrypted;
+    private final String studentnameEncrypted;
     
     private final String documentname;
 
@@ -87,11 +87,11 @@ public class TestDocKey implements Serializable {
     }
 
     public TestDocKey(Encryption encryption, String basename, 
-            Object testid, String testname, String syndicate, 
-            String username, String docname, long timecreated) {
+            Object testid, String testname, String studentgroup, 
+            String studentname, String docname, long timecreated) {
         
-        this(basename, testid, testname, syndicate, username, 
-                encrypt(encryption, username), 
+        this(basename, testid, testname, studentgroup, studentname, 
+                encrypt(encryption, studentname), 
                 docname, timecreated);
     }
     
@@ -104,20 +104,20 @@ public class TestDocKey implements Serializable {
     } 
     
     protected TestDocKey(String basename, 
-            Object testid, String testname, String syndicate, 
-            String username, String usernameEncrypted,
+            Object testid, String testname, String studentgroup, 
+            String studentname, String usernameEncrypted,
             String docname, long timecreated) {
 
         this.basename = validate(basename);
         this.testid = validate(testid.toString());
         this.testname = validate(testname);
-        this.syndicate = validate(syndicate);
-        this.username = validate(username);
-        this.usernameEncrypted = validate(usernameEncrypted);
+        this.studentgroup = validate(studentgroup);
+        this.studentname = validate(studentname);
+        this.studentnameEncrypted = validate(usernameEncrypted);
         this.documentname = Objects.requireNonNull(docname);
         this.timecreated = Objects.requireNonNull(timecreated);
         
-        final List arr = Arrays.asList(basename, testid, testname, syndicate, usernameEncrypted,
+        final List arr = Arrays.asList(basename, testid, testname, studentgroup, usernameEncrypted,
                 docname == null || docname.isEmpty() ? "" : new GetFilenameWithoutExtension().apply(docname),
                 timecreated);
 
@@ -141,7 +141,7 @@ public class TestDocKey implements Serializable {
         LOG.fine(() -> "Input: " + documentname + ", Output: " + newName);
         
         return new TestDocKey(basename, testid, testname, 
-                syndicate, username, usernameEncrypted, newName, timecreated);
+                studentgroup, studentname, studentnameEncrypted, newName, timecreated);
     }
 
     public TestDocKey withDocumentnameSuffix(String suffix) {
@@ -153,7 +153,7 @@ public class TestDocKey implements Serializable {
         LOG.fine(() -> "Input: " + documentname + ", Output: " + newName);
         
         return new TestDocKey(basename, testid, testname, 
-                syndicate, username, usernameEncrypted, newName, timecreated);
+                studentgroup, studentname, studentnameEncrypted, newName, timecreated);
     }
     
     private String buildValue(List arr) {
@@ -205,11 +205,11 @@ public class TestDocKey implements Serializable {
             final String basename = partList.get(0);
             final String testid = partList.get(1);
             final String testname = partList.get(2);
-            final String syndicate = partList.get(3);
-            final String usernameEncrypted = partList.get(4);
-            final String username;
+            final String studentgroup = partList.get(3);
+            final String studentnameEncrypted = partList.get(4);
+            final String studentname;
             try{
-                username = encryption == null ? usernameEncrypted : new String(encryption.decrypt(usernameEncrypted));
+                studentname = encryption == null ? studentnameEncrypted : new String(encryption.decrypt(studentnameEncrypted));
             }catch(Exception e) {
                 throw new RuntimeException(e);
             }    
@@ -226,7 +226,7 @@ public class TestDocKey implements Serializable {
             final long timecreated = Long.parseLong(timecreatedStr);
             
             output = new TestDocKey(encryption, basename, testid, testname, 
-                    syndicate, username, docname, timecreated);
+                    studentgroup, studentname, docname, timecreated);
         }
         return Optional.ofNullable(output);
     }
@@ -280,16 +280,16 @@ public class TestDocKey implements Serializable {
         return basename;
     }
 
-    public String getSyndicate() {
-        return syndicate;
+    public String getStudentgroup() {
+        return studentgroup;
     }
 
-    public String getUsername() {
-        return username;
+    public String getStudentname() {
+        return studentname;
     }
 
-    public String getUsernameEncrypted() {
-        return usernameEncrypted;
+    public String getStudentnameEncrypted() {
+        return studentnameEncrypted;
     }
 
     public Object getTestid() {

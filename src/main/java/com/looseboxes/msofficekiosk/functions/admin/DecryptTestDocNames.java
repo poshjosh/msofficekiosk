@@ -45,8 +45,8 @@ public class DecryptTestDocNames extends AbstractSelectionAction<File>{
         
         final Map map = new LinkedHashMap();
         map.put(TestDocKey.TEST_NAME, id.getTestname());
-        map.put(TestDocKey.SYNDICATE, id.getSyndicate());
-        map.put(TestDocKey.USER_NAME, id.getUsername());
+        map.put(TestDocKey.STUDENT_GROUP, id.getStudentgroup());
+        map.put(TestDocKey.STUDENT_NAME, id.getStudentname());
         map.put(TestDocKey.DOCUMENT_NAME, id.getDocumentname());
 
         new MultiInputDialog(context.getConfig(ConfigService.APP_UI)).apply(map, "File Details");

@@ -16,30 +16,32 @@
 
 package com.looseboxes.msofficekiosk;
 
+import com.bc.jpa.spring.JdbcPropertiesProvider;
 import com.bc.jpa.spring.JpaConfiguration;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
-import org.springframework.context.ApplicationContext;
 
 /**
  * @author Chinomso Bassey Ikwuagwu on May 25, 2019 6:39:12 PM
  */
 public class JpaConfigurationTestCase extends JpaConfiguration{
     
-    @Override
-    public String getPersistenceUnitName() {
-        return com.bc.elmi.pu.PersistenceUnit.NAME;
+    public static class JdbcPropertiesProviderImpl implements JdbcPropertiesProvider{
+        @Override
+        public Properties apply(String persistenceUnitName) {
+            try(final InputStream in = Thread.currentThread().getContextClassLoader()
+                    .getResourceAsStream("META-INF/test_jdbc.properties")) {
+                final Properties output = new Properties();
+                output.load(in);
+                return output;
+            }catch(IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
-
-    @Override
-    public com.bc.jpa.spring.JdbcPropertiesProvider jdbcPropertiesProvider(ApplicationContext spring) {
-        final Properties output = new Properties();
-        output.setProperty("javax.persistence.jdbc.url", "jdbc:mysql://localhost:3306/elmi?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC");
-        output.setProperty("javax.persistence.jdbc.user", "root");
-        output.setProperty("javax.persistence.jdbc.driver", "com.mysql.jdbc.Driver");
-        output.setProperty("javax.persistence.jdbc.password", "Jesus4eva-");
-        output.setProperty("eclipselink.logging.level.sql", "FINE");
-        output.setProperty("eclipselink.logging.parameters", "true");
-        return (puName) -> output;
+    
+    public JpaConfigurationTestCase() {
+        super(com.bc.elmi.pu.PersistenceUnit.NAME, new JdbcPropertiesProviderImpl());
     }
-
 }

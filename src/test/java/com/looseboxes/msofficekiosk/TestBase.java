@@ -16,10 +16,6 @@
 
 package com.looseboxes.msofficekiosk;
 
-import com.looseboxes.msofficekiosk.FileNames;
-import com.looseboxes.msofficekiosk.Cache;
-import com.looseboxes.msofficekiosk.Main;
-import com.looseboxes.msofficekiosk.MsKioskConfiguration;
 import com.looseboxes.msofficekiosk.mapper.Mapper;
 import com.looseboxes.msofficekiosk.mapper.MapperJackson;
 import com.bc.config.Config;
@@ -49,7 +45,6 @@ import com.looseboxes.msofficekiosk.document.DocumentStoreImpl;
 import com.looseboxes.msofficekiosk.test.TestDoc;
 import com.looseboxes.msofficekiosk.test.TestDocImpl;
 import com.looseboxes.msofficekiosk.document.TestDocumentBuilder;
-import com.looseboxes.msofficekiosk.document.TestDocumentBuilderImpl;
 import com.looseboxes.msofficekiosk.security.CredentialsSupplier;
 import com.looseboxes.msofficekiosk.security.CredentialsSupplierFromLoggedInUser;
 import com.looseboxes.msofficekiosk.test.TestFileProvider;
@@ -221,8 +216,8 @@ public class TestBase {
         jpaConfig = new JpaConfigurationTestCase();
         
         jpa = jpaConfig.jpaObjectFactory(
-                jpaConfig.entityManagerFactoryCreator(jpaConfig.jdbcPropertiesProvider(null)), 
-                jpaConfig.sqlDateTimePatterns(jpaConfig.jdbcPropertiesProvider(null)));
+                jpaConfig.entityManagerFactoryCreator(jpaConfig.jdbcPropertiesProvider()), 
+                jpaConfig.sqlDateTimePatterns(jpaConfig.jdbcPropertiesProvider()));
         
 //        loginManager.promptUserLogin(2);
         final LoginManagerImpl impl = ((LoginManagerImpl)loginManager);

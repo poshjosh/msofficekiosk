@@ -39,6 +39,7 @@ import com.looseboxes.msofficekiosk.ui.MessageDialog;
 import com.looseboxes.msofficekiosk.ui.UiBeans;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.swt.widgets.Display;
+import org.springframework.context.ApplicationContext;
 
 /**
  * @author Chinomso Bassey Ikwuagwu on Mar 30, 2019 12:27:00 AM
@@ -68,8 +69,8 @@ public class ExamUiConfiguration {
         return (ExamUiConfigurer)configurer;
     }
 
-    @Bean @Scope("prototype") EditTest editTest(ConfigFactory configFactory) {
-        return new EditTest(configFactory);
+    @Bean @Scope("prototype") EditTest editTest(ApplicationContext spring) {
+        return new EditTest(spring);
     }
 
     @Bean @Scope("prototype") PromptUserSelectTest promptUserSelectTest(

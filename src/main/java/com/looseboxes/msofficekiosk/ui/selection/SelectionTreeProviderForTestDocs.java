@@ -57,7 +57,8 @@ public class SelectionTreeProviderForTestDocs implements SelectionUiProvider<JTr
     @Override
     public JTree apply(List<File> files) {
         
-        final Node root = createNode(0, "Select to view submitted " + this.getLevelName(1) + 's', null);
+        final Node root = createNode(null, TestDocTreeNodeLevel.root, 
+                "Select to view submitted " + TestDocTreeNodeLevel.test.name() + 's');
         
         for(File file : files) {
     
@@ -126,24 +127,26 @@ public class SelectionTreeProviderForTestDocs implements SelectionUiProvider<JTr
         
         final String testName = id.getTestname();
         
-        final Node test = this.find(root, 1, testName);
+        final Node test = this.find(root, TestDocTreeNodeLevel.test, testName);
         
-        final String syndName = id.getSyndicate();
+        final String studentGroupName = id.getStudentgroup();
         
-        final Node synd = this.find(test, 2, syndName);
+        final Node studentGroup = this.find(test, TestDocTreeNodeLevel.group, studentGroupName);
         
-        final String userName = id.getUsername();
+        final String userName = id.getStudentname();
         
-        final Node user = this.find(synd, 3, userName);
+        final Node user = this.find(studentGroup, TestDocTreeNodeLevel.student, userName);
         
         final String docName = id.getDocumentname();
         
-        final Node doc = this.find(user, 4, docName);
+        final Node doc = this.find(user, TestDocTreeNodeLevel.document, docName);
         
         return doc;
     }
     
-    public <T> Node<T> find(Node<T> parent, int level, T value) {
+    public <T> Node<T> find(Node<T> parent, TestDocTreeNodeLevel en, T value) {
+        
+        final int level = en.ordinal();
         
         final Predicate<Node<T>> nodeTest = (node) -> {
             
@@ -163,23 +166,12 @@ public class SelectionTreeProviderForTestDocs implements SelectionUiProvider<JTr
         
         LOG.finer(() -> "Found: "+found.isPresent()+". Level: " + level + ", value: " + value);
        
-        return found.isPresent() ? found.get() : this.createNode(level, value, parent);
+        return found.isPresent() ? found.get() : this.createNode(parent, en, value);
     }
     
-    public <T> Node<T> createNode(int level, T value, Node<T> parent) {
-        final Node<T> node = Node.of(this.getLevelName(level), value, parent);
+    public <T> Node<T> createNode(Node<T> parent, TestDocTreeNodeLevel en, T value) {
+        final Node<T> node = Node.of(en.name(), value, parent);
         LOG.finer(() -> "Created: " + node);
         return node;
-    }
-    
-    public String getLevelName(int level) {
-        switch(level) {
-            case 0: return "root";
-            case 1: return "test";
-            case 2: return "synd";
-            case 3: return "user";
-            case 4: return "docus";
-        }
-        return null;
     }
 }
