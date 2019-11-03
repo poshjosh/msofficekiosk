@@ -75,12 +75,14 @@ import com.looseboxes.msofficekiosk.security.CredentialsSupplierFromLoggedInUser
 import com.looseboxes.msofficekiosk.document.DocumentStore;
 import com.looseboxes.msofficekiosk.document.DocumentStoreImpl;
 import com.looseboxes.msofficekiosk.functions.IsServerIp;
+import com.looseboxes.msofficekiosk.functions.StudentGroupListSupplier;
 import com.looseboxes.msofficekiosk.net.UrlBuilder;
 import com.looseboxes.msofficekiosk.net.UrlBuilderImpl;
 import com.looseboxes.msofficekiosk.net.TestDocSenderFactory;
 import com.looseboxes.msofficekiosk.net.TestDocSenderFactoryImpl;
 import com.looseboxes.msofficekiosk.security.LoginListenerUpdateUi;
 import com.looseboxes.msofficekiosk.ui.AppUiContext;
+import java.util.Collections;
 import org.springframework.beans.factory.annotation.Qualifier;
 import java.util.logging.Logger;
 import org.springframework.context.ApplicationContext;
@@ -95,6 +97,10 @@ public class MsKioskConfiguration {
     private static final Logger LOG = Logger.getLogger(MsKioskConfiguration.class.getName());
     
     public static final String DEFAULT_CACHE_NAME = "mskiosk.cache.default";
+    
+    @Bean public StudentGroupListSupplier studentGroupListSupplier() {
+        return () -> Collections.EMPTY_LIST;
+    } 
     
     @Bean public AppContext appContext() {
 

@@ -53,7 +53,7 @@ public class Main {
 
             final Class<?> [] configClasses = 
 //                    new Class[]{MsKioskConfiguration.class, CommandConfiguration.class, 
-                    new Class[]{MsKioskConfigurationLocalLogin.class, CommandConfiguration.class, 
+                    new Class[]{MsKioskConfigurationDev.class, CommandConfiguration.class, 
                     UiConfiguration.class, AdminUiConfiguration.class, ExamUiConfiguration.class};
 
             final ConfigurableApplicationContext ctx = new AnnotationConfigApplicationContext(configClasses);
